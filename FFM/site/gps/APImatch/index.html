@@ -407,7 +407,7 @@
                 <div class="card-header">
                     <div class="card-title">
                         <h2>Сопоставление игроков и датчиков</h2>
-                        <p>Назначьте трекер каждому игроку перед событием или импортируйте данные после.</p>
+                        <p>Назначьте датчик каждому игроку перед событием и импортируйте данные после.</p>
                     </div>
                     <div style="display: flex; gap: 10px;" id="action-buttons">
                         <button class="btn btn-edit" id="btn-edit" onclick="enableEditMode()">
@@ -435,7 +435,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 30%">Игрок</th>
-                                <th style="width: 25%">Трекер (ID)</th>
+                                <th style="width: 25%">Датчик (ID)</th>
                                 <th style="width: 15%">Статус</th>
                                 <th style="width: 25%">Метаданные</th>
                                 <th style="width: 5%; text-align: center;"></th>
@@ -462,7 +462,7 @@
                                 <td>
                                     <select class="tracker-select assigned" onchange="checkTrackerConflict(this, 'TRK-001')" disabled>
                                         <option value="none">Не выбран</option>
-                                        <option value="TRK-001" selected>TRK-001</option>
+                                        <option value="TRK-001" selected>TRK-001 (по-умолчанию)</option>
                                         <option value="TRK-002">TRK-002</option>
                                         <option value="TRK-003">TRK-003</option>
                                         <option value="TRK-004">TRK-004</option>
