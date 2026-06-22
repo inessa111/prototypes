@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFM - Данные матча</title>
+    <style>
+        :root {
+            --ff-orange: #FF6B00;
+            --ff-orange-light: #FFF2E8;
+            --ff-bg: #F4F5F7;
+            --ff-card-bg: #FFFFFF;
+            --ff-text-main: #1A1A1A;
+            --ff-text-secondary: #6B7280;
+            --ff-border: #E5E7EB;
+            --ff-success: #10B981;
+            --ff-success-bg: #D1FAE5;
+            --ff-warning: #F59E0B;
+            --ff-warning-bg: #FEF3C7;
+            --ff-danger: #EF4444;
+            --ff-danger-bg: #FEE2E2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--ff-bg);
+            color: var(--ff-text-main);
+        }
+
+        /* Header Section */
+        .match-header {
+            background-color: var(--ff-orange);
+            padding: 24px 40px;
+            color: white;
+            position: relative;
+        }
+
+        .match-score-row {
+            display: flex;
+            align-items: center;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .match-score-row span { margin: 0 10px; }
+        .score-box { background: white; color: black; padding: 4px 12px; border-radius: 8px; margin: 0 15px; }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: var(--ff-card-bg);
+            padding: 0 40px;
+            border-bottom: 1px solid var(--ff-border);
+        }
+
+        .nav-tab {
+            padding: 16px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--ff-text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-tab.active {
+            color: var(--ff-orange);
+            border-bottom-color: var(--ff-orange);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: #f9fafb;
+        }
+
+        /* Content Area */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--ff-card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--ff-border);
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        /* Sub-tabs (Upload / Data) */
+        .sub-nav {
+            display: flex;
+            background: #F9FAFB;
+            border-bottom: 1px solid var(--ff-border);
+            padding: 0 20px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sub-tabs-group {
+            display: flex;
+        }
+
+        .sub-tab {
+            padding: 16px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ff-text-secondary);
+            border-bottom: 2px solid transparent;
+        }
+
+        .sub-tab.active {
+            color: var(--ff-orange);
+            border-bottom-color: var(--ff-orange);
+            background: white;
+        }
+
+        /* Card Header with Actions */
+        .card-header {
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--ff-border);
+        }
+
+        .card-title h2 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        
+        .card-title p {
+            font-size: 13px;
+            color: var(--ff-text-secondary);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--ff-text-main);
+            color: white;
+        }
+
+        .btn-primary:hover { opacity: 0.85; }
+        .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid var(--ff-border);
+            color: var(--ff-text-main);
+        }
+        
+        .btn-outline:hover { background: #f9fafb; }
+
+        .btn-edit {
+            background: var(--ff-orange-light);
+            color: var(--ff-orange);
+            border: 1px solid var(--ff-orange);
+        }
+
+        /* Tables */
+        .table-container { padding: 20px; overflow-x: auto; }
+        
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--ff-text-secondary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--ff-border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--ff-border);
+            vertical-align: middle;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: #FAFAFA; }
+
+        /* Section Headers in Table */
+        .section-header td {
+            background: #F3F4F6;
+            font-weight: 700;
+            color: var(--ff-text-main);
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        /* Player Cell */
+        .player-cell { display: flex; align-items: center; gap: 10px; }
+        .avatar {
+            width: 32px; height: 32px;
+            background: #E5E7EB; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: var(--ff-text-secondary); font-size: 12px;
+        }
+        .player-name { font-weight: 600; display: block; }
+        .player-pos { font-size: 12px; color: var(--ff-text-secondary); }
+
+        /* Inputs & Selects */
+        select {
+            padding: 6px 10px;
+            border: 1px solid var(--ff-border);
+            border-radius: 6px;
+            font-size: 13px;
+            width: 100%;
+            max-width: 200px;
+            background: white;
+        }
+
+        select.error {
+            border-color: var(--ff-danger);
+            background-color: var(--ff-danger-bg);
+            color: var(--ff-danger);
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .badge-none { background: #F3F4F6; color: #6B7280; }
+        .badge-process { background: var(--ff-blue-bg); color: var(--ff-blue); }
+        .badge-success { background: var(--ff-success-bg); color: #065F46; }
+        .badge-error { background: var(--ff-danger-bg); color: #991B1B; }
+
+        .file-link {
+            color: var(--ff-orange);
+            text-decoration: none;
+            font-size: 12px;
+            display: block;
+            margin-top: 2px;
+        }
+        .file-link:hover { text-decoration: underline; }
+
+        .meta-info {
+            font-size: 11px;
+            color: var(--ff-text-secondary);
+        }
+
+        /* Trash Icon Button */
+        .btn-icon-trash {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            color: #9CA3AF;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon-trash:hover {
+            background-color: #FEE2E2;
+            color: #EF4444;
+        }
+
+        .btn-icon-trash svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal {
+            background: white;
+            width: 500px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+        
+        .upload-zone {
+            border: 2px dashed var(--ff-border);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            color: var(--ff-text-secondary);
+            margin-bottom: 20px;
+            background: #FAFAFA;
+            cursor: pointer;
+        }
+
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+
+        /* Tooltip simulation */
+        .tooltip-trigger {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted var(--ff-text-secondary);
+        }
+        
+        .tooltip-trigger:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        /* Drag and Drop Row Simulation */
+        .draggable-row {
+            cursor: grab;
+        }
+        .draggable-row:active {
+            cursor: grabbing;
+            background: #EFF6FF;
+        }
+
+        /* Hidden elements */
+        .hidden { display: none; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Match Header -->
+    <div class="match-header">
+        <div class="match-score-row">
+            <span>Актобе</span>
+            <span class="score-box">1 - 1</span>
+            <span>Шахтёр</span>
+        </div>
+        <div style="font-size: 14px; opacity: 0.9; margin-top: 5px;">Freedom QJ League • Тур 4 • 09 мая, 19:00</div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <div class="nav-tab">План матча</div>
+        <div class="nav-tab">Трансляция</div>
+        <div class="nav-tab">Протокол</div>
+        <div class="nav-tab active">Данные</div>
+        <div class="nav-tab">Отчет</div>
+    </div>
+
+    <div class="container">
+        
+        <!-- Main Card -->
+        <div class="card">
+            
+            <!-- Sub Navigation: Upload vs Data -->
+            <div class="sub-nav">
+                <div class="sub-tabs-group">
+                    <div class="sub-tab active" onclick="switchSubTab('upload', this)">Загрузка</div>
+                    <div class="sub-tab" onclick="switchSubTab('stats', this)">Данные</div>
+                </div>
+                
+                <!-- Team Switcher (Visual only for context) -->
+                <div style="display: flex; background: white; border: 1px solid var(--ff-border); border-radius: 8px; padding: 4px; margin-right: 20px;">
+                    <div style="padding: 6px 12px; border-radius: 6px; background: var(--ff-orange); color: white; font-size: 13px; font-weight: 500;">Актобе</div>
+                    <div style="padding: 6px 12px; color: var(--ff-text-secondary); font-size: 13px; font-weight: 500;">Шахтёр</div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 1: UPLOAD -->
+            <div id="tab-upload">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2>Сопоставление игроков и датчиков</h2>
+                        <p>Назначьте трекер каждому игроку перед событием или импортируйте данные после.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;" id="action-buttons">
+                        <button class="btn btn-edit" id="btn-edit" onclick="enableEditMode()">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            Редактировать
+                        </button>
+                        <button class="btn btn-primary" id="btn-import" onclick="openModal()" disabled>
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            Импорт данных
+                        </button>
+                        <button class="btn btn-outline">
+                            PDF
+                        </button>
+                    </div>
+                    
+                    <!-- Save Button (Hidden by default) -->
+                    <div style="display: none; gap: 10px;" id="save-buttons">
+                        <button class="btn btn-outline" onclick="cancelEditMode()">Отмена</button>
+                        <button class="btn btn-save" onclick="saveChanges()">Сохранить</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 30%">Игрок</th>
+                                <th style="width: 25%">Трекер (ID)</th>
+                                <th style="width: 15%">Статус</th>
+                                <th style="width: 25%">Метаданные</th>
+                                <th style="width: 5%; text-align: center;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="roster-body">
+                            
+                            <!-- SECTION: ПРОТОКОЛ -->
+                            <tr class="section-header">
+                                <td colspan="5">Протокол</td>
+                            </tr>
+
+                            <!-- Player 1: Success -->
+                            <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="avatar">10</div>
+                                        <div>
+                                            <span class="player-name">Иванов Серик</span>
+                                            <span class="player-pos">Центральный защитник</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <select class="tracker-select assigned" onchange="checkTrackerConflict(this, 'TRK-001')" disabled>
+                                        <option value="none">Не выбран</option>
+                                        <option value="TRK-001" selected>TRK-001</option>
+                                        <option value="TRK-002">TRK-002</option>
+                                        <option value="TRK-003">TRK-003</option>
+                                        <option value="TRK-004">TRK-004</option>
+                                    </select>
+                                </td>
+                                <td><span class="badge badge-success"> Загружен</span></td>
+                                <td>
+                                    <div class="meta-info">09.05.2026 21:15</div>
+                                    <a href="#" class="file-link">ivanov_match.csv</a>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn-icon-trash" title="Удалить файл">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Player 2: Error (Conflict Simulation) -->
+                            <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="avatar">7</div>
+                                        <div>
+                                            <span class="player-name">Ким Дмитрий</span>
+                                            <span class="player-pos">Центральный полузащитник</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <select class="tracker-select error tooltip-trigger" data-tooltip="Датчик уже занят игроком Иванов Серик" onchange="checkTrackerConflict(this, 'TRK-001')" disabled>
+                                        <option value="none">Не выбран</option>
+                                        <option value="TRK-001" selected>TRK-001</option>
+                                        <option value="TRK-002">TRK-002</option>
+                                        <option value="TRK-003">TRK-003</option>
+                                        <option value="TRK-004">TRK-004</option>
+                                    </select>
+                                </td>
+                                <td><span class="badge badge-error">🔴 Ошибка</span></td>
+                                <td>
+                                    <div class="meta-info" style="color: var(--ff-danger)">Конфликт привязки</div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn-icon-trash" title="Удалить файл">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+
+
+                             <!-- Player 3: No Data -->
+                             <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="avatar">55</div>
+                                        <div>
+                                            <span class="player-name">Иванов Марат</span>
+                                            <span class="player-pos">Защитник</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <select class="tracker-select" onchange="checkTrackerConflict(this, 'TRK-003')" disabled>
+                                        <option value="none" selected>Не выбран</option>
+                                        <option value="TRK-001">TRK-001</option>
+                                        <option value="TRK-002">TRK-002</option>
+                                        <option value="TRK-003">TRK-003</option>
+                                        <option value="TRK-004">TRK-004</option>
+                                    </select>
+                                </td>
+                                <td><span class="badge badge-none"> Нет данных</span></td>
+                                <td>
+                                    <div class="meta-info">—</div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn-icon-trash" title="Удалить файл">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Player 4: Processing -->
+                            <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="avatar">11</div>
+                                        <div>
+                                            <span class="player-name">Петров Ерлан</span>
+                                            <span class="player-pos">Вратарь</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <select class="tracker-select" onchange="checkTrackerConflict(this, 'TRK-004')" disabled>
+                                        <option value="none">Не выбран</option>
+                                        <option value="TRK-001">TRK-001</option>
+                                        <option value="TRK-002">TRK-002</option>
+                                        <option value="TRK-003">TRK-003</option>
+                                        <option value="TRK-004" selected>TRK-004</option>
+                                    </select>
+                                </td>
+                                <td><span class="badge badge-process"> В процессе</span></td>
+                                <td>
+                                    <div class="meta-info">Парсинг...</div>
+                                    <div style="width: 100%; background: #eee; height: 4px; border-radius: 2px; margin-top: 4px;">
+                                        <div style="width: 60%; background: var(--ff-blue); height: 100%; border-radius: 2px;"></div>
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn-icon-trash" title="Удалить файл">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+
+
+                            <!-- SECTION: ДРУГИЕ -->
+                            <tr class="section-header">
+                                <td colspan="5">Другие</td>
+                            </tr>
+
+                            <!-- Player 5: Not Selected -->
+                            <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="avatar"></div>
+                                        <div>
+                                            <span class="player-name">Асланов Канат</span>
+                                            <span class="player-pos">Нападающий</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <select class="tracker-select" onchange="checkTrackerConflict(this, 'TRK-XXX')" disabled>
+                                        <option value="none" selected>Не выбран</option>
+                                        <option value="TRK-001">TRK-001</option>
+                                        <option value="TRK-002">TRK-002</option>
+                                        <option value="TRK-003">TRK-003</option>
+                                        <option value="TRK-004">TRK-004</option>
+                                    </select>
+                                </td>
+                                <td><span class="badge badge-none"> Нет данных</span></td>
+                                <td>
+                                    <div class="meta-info">—</div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn-icon-trash" title="Удалить файл">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+                       <!-- SUB-TAB 2: DATA / STATS -->
+            <div id="tab-stats" class="hidden">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Показатели игроков</div>
+                        <div style="font-size: 12px; color: var(--ff-text-secondary);">Данные обработаны и визуализированы</div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <select style="max-width: 150px;">
+                            <option>Сортировка: Общая нагрузка</option>
+                            <option>Сортировка: Дистанция</option>
+                        </select>
+                        <button class="btn btn-outline">Экспорт CSV</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Игрок</th>
+                                <th>Дистанция (км)</th>
+                                <th>Макс. скорость (км/ч)</th>
+                                <th>Выс. интенсив. (>19 км/ч)</th>
+                                <th>Спринты (>25 км/ч)</th>
+                                <th>Ускорения (>2 м/с²)</th>
+                                <th>Торможения (<-2 м/с²)</th>
+                                <th>Зона 5 (90-100%)</th>
+                                <th>Зона 6 (100%+)</th>
+                                <th>Player Load (AU)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Player 1 -->
+                            <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="avatar">55</div>
+                                        <div>
+                                            <span class="player-name">Иванов Серик</span>
+                                            <span class="player-pos">Защитник</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    10.8
+                                    <div class="stat-bar-container"><div class="stat-bar bg-green" style="width: 85%"></div></div>
+                                </td>
+                                <td>28.4</td>
+                                <td style="color: var(--ff-success); font-weight: 600;">1.2 км</td>
+                                <td>14</td>
+                                <td>
+                                    65
+                                    <div class="stat-bar-container"><div class="stat-bar bg-green" style="width: 70%"></div></div>
+                                </td>
+                                <td>42</td>
+                                <td>14 мин</td>
+                                <td>4 мин</td>
+                                <td>450 <span style="font-size:10px; color:#aaa">AU</span></td>
+                            </tr>
+                            <!-- Player 2 -->
+                            <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="avatar">10</div>
+                                        <div>
+                                            <span class="player-name">Ахметов Даурен</span>
+                                            <span class="player-pos">Вратарь</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    11.5
+                                    <div class="stat-bar-container"><div class="stat-bar bg-green" style="width: 95%"></div></div>
+                                </td>
+                                <td>30.1</td>
+                                <td style="color: var(--ff-success); font-weight: 600;">1.8 км</td>
+                                <td>22</td>
+                                <td>
+                                    98
+                                    <div class="stat-bar-container"><div class="stat-bar bg-green" style="width: 90%"></div></div>
+                                </td>
+                                <td>85</td>
+                                <td>22 мин</td>
+                                <td>8 мин</td>
+                                <td>520 <span style="font-size:10px; color:#aaa">AU</span></td>
+                            </tr>
+                             <!-- Player 3 -->
+                             <tr>
+                                <td>
+                                    <div class="player-cell">
+                                        <div class="avatar">11</div>
+                                        <div>
+                                            <span class="player-name">Козлов Максим</span>
+                                            <span class="player-pos">Нападающий</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    9.2
+                                    <div class="stat-bar-container"><div class="stat-bar bg-orange" style="width: 60%"></div></div>
+                                </td>
+                                <td style="color: var(--ff-success);">32.5</td>
+                                <td style="color: var(--ff-success); font-weight: 600;">0.9 км</td>
+                                <td style="color: var(--ff-success); font-weight: 600;">34</td>
+                                <td>
+                                    45
+                                    <div class="stat-bar-container"><div class="stat-bar bg-orange" style="width: 40%"></div></div>
+                                </td>
+                                <td>38</td>
+                                <td>2 мин</td>
+                                <td>1 мин</td>
+                                <td>380 <span style="font-size:10px; color:#aaa">AU</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Modal for Import -->
+    <div class="modal-overlay" id="importModal">
+        <div class="modal">
+            <div class="modal-header">Подтверждение импорта данных</div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px; font-size: 14px; color: var(--ff-text-secondary);">
+                    Система распределила файлы по игрокам на основе ID трекеров. Вы можете изменить назначение вручную, перетащив файл.
+                </p>
+                
+                <div class="upload-zone" style="padding: 10px; border-style: solid; border-color: var(--ff-border); background: white;">
+                    <table style="width: 100%; min-width: auto;">
+                        <thead>
+                            <tr>
+                                <th>Игрок</th>
+                                <th>ID Трекера</th>
+                                <th>Файл</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="draggable-row">
+                                <td>Иванов Серик</td>
+                                <td>TRK-001</td>
+                                <td style="color: var(--ff-orange);">ivanov_match.csv</td>
+                            </tr>
+                            <tr class="draggable-row">
+                                <td>Ким Дмитрий</td>
+                                <td>TRK-002</td>
+                                <td style="color: var(--ff-orange);">kim_data.csv</td>
+                            </tr>
+                            <tr class="draggable-row">
+                                <td>Иванов Марат</td>
+                                <td>TRK-003</td>
+                                <td style="color: var(--ff-orange);">marat_gps.csv</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="background: #FEF3C7; padding: 10px; border-radius: 6px; font-size: 12px; color: #92400E;">
+                    ⚠️ Внимание: Файл <b>unknown_device.csv</b> пропущен. Датчик TRK-999 не зарегистрирован в системе.
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+                <button class="btn btn-primary" onclick="processUpload()">Подтвердить и загрузить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching Logic
+        function switchSubTab(tabName, element) {
+            // Hide all contents
+            document.getElementById('tab-upload').classList.add('hidden');
+            document.getElementById('tab-stats').classList.add('hidden');
+            
+            // Remove active class from tabs
+            const tabs = document.querySelectorAll('.sub-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+
+            // Show selected content
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            element.classList.add('active');
+        }
+
+        // Modal Logic
+        function openModal() {
+            document.getElementById('importModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('importModal').style.display = 'none';
+        }
+
+        // Edit Mode Logic
+        function enableEditMode() {
+            // Hide edit/import buttons
+            document.getElementById('action-buttons').style.display = 'none';
+            // Show save/cancel buttons
+            document.getElementById('save-buttons').style.display = 'flex';
+            
+            // Enable selects
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                select.disabled = false;
+            });
+        }
+
+        function cancelEditMode() {
+            // Show edit/import buttons
+            document.getElementById('action-buttons').style.display = 'flex';
+            // Hide save/cancel buttons
+            document.getElementById('save-buttons').style.display = 'none';
+            
+            // Disable selects
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                select.disabled = true;
+            });
+        }
+
+        function saveChanges() {
+            // Simulate saving
+            alert('Изменения сохранены!');
+            cancelEditMode();
+            
+            // Enable import button if it was disabled before (simulation)
+            document.getElementById('btn-import').disabled = false;
+        }
+
+        // Conflict Detection Logic
+        function checkTrackerConflict(selectElement, assignedId) {
+            // Simple logic to simulate duplicate detection
+            if (selectElement.value === 'TRK-001' && assignedId !== 'TRK-001') {
+                // Reset to none if conflict
+                selectElement.value = 'none';
+                selectElement.classList.add('error');
+                alert('Ошибка: Датчик TRK-001 уже назначен игроку Иванов Серик.');
+            } else if (selectElement.value !== 'none') {
+                selectElement.classList.remove('error');
+            } else {
+                selectElement.classList.remove('error');
+            }
+        }
+
+        function processUpload() {
+            const btn = document.querySelector('#importModal .btn-primary');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Обработка...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                closeModal();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                // Simulate success update
+                alert('Данные успешно загружены!');
+                
+                // Enable import button if it was disabled before (simulation)
+                document.getElementById('btn-import').disabled = false;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
+
