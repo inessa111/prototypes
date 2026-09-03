@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FFM - План игрока</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; }
+  
+  .app { display: flex; min-height: 100vh; }
+  
+  .sidebar { width: 72px; background: #2d2d3a; display: flex; flex-direction: column; align-items: center; padding: 16px 0; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; }
+  .sidebar-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border-radius: 8px; cursor: pointer; color: #8a8a9a; font-size: 18px; }
+  .sidebar-icon:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .sidebar-icon.active { color: #fff; }
+  .sidebar-avatar { width: 36px; height: 36px; border-radius: 50%; background: #555; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; margin-top: auto; cursor: pointer; }
+  
+  .main { margin-left: 72px; flex: 1; }
+  
+  .topbar { background: #6b6b7b; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .topbar-label { background: #fff; color: #1a1a1a; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .topbar-close { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.3); border: none; color: #fff; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .topbar-close:hover { background: rgba(0,0,0,0.5); }
+  
+  .content { padding: 32px 40px; background: #fff; min-height: calc(100vh - 68px); }
+  
+  .player-name { font-size: 42px; font-weight: 800; margin-bottom: 24px; }
+  
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid #e0e0e0; margin-bottom: 28px; }
+  .tab { padding: 12px 20px; font-size: 15px; color: #666; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .tab:hover { color: #1a1a1a; }
+  .tab.active { color: #1a1a1a; font-weight: 600; border-bottom-color: #1a1a1a; }
+  
+  .filters-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .filters-left { display: flex; align-items: center; gap: 12px; }
+  .filter-select { padding: 10px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; min-width: 180px; background: #fff; color: #666; appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%23666' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  .btn-apply { padding: 10px 24px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
+  .btn-apply:hover { background: #333; }
+  .btn-filter-icon { width: 40px; height: 40px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #666; }
+  
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th { text-align: left; padding: 14px 16px; font-size: 14px; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e8e8e8; background: #fafafa; }
+  .data-table td { padding: 16px; font-size: 14px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+  .data-table tr:hover td { background: #fafafa; }
+  .date-cell { font-size: 14px; }
+  .date-cell .year { color: #999; }
+  .role-name { font-weight: 600; font-size: 14px; }
+  .role-sub { font-size: 12px; color: #888; margin-top: 2px; }
+  
+  .btn-create { padding: 12px 28px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; margin-bottom: 24px; }
+  .btn-create:hover { background: #333; }
+  .btn-secondary { padding: 10px 20px; background: #fff; color: #1a1a1a; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; cursor: pointer; }
+  .btn-secondary:hover { background: #f5f5f5; }
+  
+  .form-section { margin-bottom: 32px; }
+  .form-label { font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 500; }
+  .form-label-main { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: #1a1a1a; }
+  .form-input { width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: inherit; }
+  .form-input:focus { outline: none; border-color: #1a1a1a; }
+  .form-textarea { width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: inherit; min-height: 120px; resize: vertical; }
+  .form-textarea:focus { outline: none; border-color: #1a1a1a; }
+  .form-row-2 { display: flex; gap: 16px; margin-bottom: 16px; }
+  .form-col { flex: 1; }
+  
+  .eval-collapsible { background: #f8f8f8; border-radius: 12px; margin-bottom: 24px; overflow: hidden; }
+  .eval-collapsible-header { padding: 16px 20px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
+  .eval-collapsible-header:hover { background: #f0f0f0; }
+  .eval-collapsible-title { font-size: 14px; font-weight: 600; color: #555; }
+  .eval-collapsible-arrow { font-size: 12px; color: #888; transition: transform 0.2s; }
+  .eval-collapsible-arrow.open { transform: rotate(180deg); }
+  .eval-collapsible-body { padding: 0 20px 20px; display: none; }
+  .eval-collapsible-body.open { display: block; }
+  
+  .eval-block { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px; border: 1px solid #eee; }
+  .eval-block-title { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .eval-block-role { font-size: 11px; color: #666; margin-bottom: 8px; }
+  .eval-block-text { font-size: 13px; line-height: 1.5; color: #333; }
+  
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: flex-start; justify-content: center; padding-top: 40px; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: #fff; border-radius: 16px; width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; position: relative; }
+  .modal-header { background: #6b6b7b; padding: 16px 24px; border-radius: 16px 16px 0 0; display: flex; align-items: center; justify-content: space-between; }
+  .modal-header-label { background: #fff; color: #1a1a1a; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .modal-body { padding: 32px 40px; }
+  .modal-close { width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.3); border: none; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  
+  .training-item { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.15s; }
+  .training-item:hover { background: #fafafa; }
+  .training-name { font-size: 14px; font-weight: 500; color: #1a1a1a; flex: 1; }
+  .training-name:hover { color: #4a6cf7; text-decoration: underline; }
+  .training-date { font-size: 13px; color: #888; }
+  
+  .form-layout { display: flex; gap: 40px; }
+  .form-main { flex: 1; }
+  .form-sidebar { width: 280px; flex-shrink: 0; }
+  .progress-circle { width: 48px; height: 48px; border-radius: 50%; border: 4px solid #e0e0e0; border-top-color: #2e7d32; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #2e7d32; margin-bottom: 16px; }
+  .progress-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 14px; color: #555; }
+  .progress-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; flex-shrink: 0; }
+  .progress-dot.done { background: #2e7d32; border-color: #2e7d32; }
+  .progress-dot.done::after { content: '✓'; }
+  
+  .page { display: none; }
+  .page.active { display: block; }
+  
+  .period-display { font-size: 14px; }
+  .period-display .period-range { font-weight: 500; }
+  
+  .progress-bar-container { width: 120px; height: 8px; background: #e8e8e8; border-radius: 4px; overflow: hidden; margin-top: 4px; }
+  .progress-bar-fill { height: 100%; background: #2e7d32; border-radius: 4px; }
+  .progress-text { font-size: 13px; color: #555; margin-top: 4px; }
+  
+  .error-msg { color: #c62828; font-size: 13px; margin-top: 4px; display: none; }
+  .error-msg.visible { display: block; }
+  
+  .btn-row { display: flex; gap: 12px; margin-top: 24px; }
+  
+  .author-info { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .author-date-block { display: flex; flex-direction: column; }
+  .author-date-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .author-date-value { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+  .author-divider { width: 1px; height: 36px; background: #ddd; }
+  .author-block { display: flex; flex-direction: column; }
+  .author-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .author-name { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+  .author-role { font-size: 12px; color: #888; }
+  .btn-edit { padding: 10px 20px; background: #fff; color: #1a1a1a; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; cursor: pointer; margin-left: auto; }
+  .btn-edit:hover { background: #f5f5f5; border-color: #bbb; }
+  
+  .supplement-section { background: #f8f8f8; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+  .supplement-section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #1a1a1a; }
+  .supplement-item { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px; border-left: 3px solid #4a6cf7; }
+  .supplement-date { font-size: 12px; color: #888; margin-bottom: 8px; }
+  .supplement-text { font-size: 14px; line-height: 1.6; color: #333; white-space: pre-wrap; }
+  
+  .supplement-modal { max-width: 600px; }
+  .supplement-modal .modal-body { padding: 24px; }
+  .supplement-modal .form-textarea { min-height: 160px; }
+  .supplement-modal .btn-row { justify-content: flex-end; }
+  
+  .link-row { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; }
+  .link-row input { flex: 1; }
+  .link-row .btn-remove { width: 36px; height: 36px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; color: #c62828; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  .link-row .btn-remove:hover { background: #fff5f5; border-color: #ffcdd2; }
+  .btn-add-link { padding: 10px 20px; background: #f8f9fa; color: #4a6cf7; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+  .btn-add-link:hover { background: #e8f0fe; border-color: #4a6cf7; }
+  .btn-add-link::before { content: '+'; font-size: 16px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-icon">▷</div>
+    <div class="sidebar-icon active"></div>
+    <div class="sidebar-icon">📅</div>
+    <div class="sidebar-icon"></div>
+    <div class="sidebar-icon"></div>
+    <div class="sidebar-icon">⊟</div>
+    <div class="sidebar-icon"></div>
+    <div class="sidebar-icon"></div>
+    <div class="sidebar-icon">💼</div>
+    <div class="sidebar-icon">📊</div>
+    <div class="sidebar-icon">📈</div>
+    <div class="sidebar-icon" style="font-size:12px;">Ру</div>
+    <div class="sidebar-avatar">Т</div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-label" id="topLabel">ИГРОК</div>
+      <button class="topbar-close" onclick="closeApp()">✕</button>
+    </div>
+
+    <div class="page active" id="pageTable">
+      <div class="content">
+        <h1 class="player-name">Марк Богачев</h1>
+        
+        <div class="tabs">
+          <div class="tab">Профиль</div>
+          <div class="tab">Матчи</div>
+          <div class="tab">Тренировки</div>
+          <div class="tab">Оценка</div>
+          <div class="tab">Тесты</div>
+          <div class="tab">Отчеты</div>
+          <div class="tab">Документы</div>
+          <div class="tab active">План</div>
+        </div>
+
+        <div class="filters-row">
+          <div class="filters-left">
+            <select class="filter-select" id="roleFilter">
+              <option value="">Роль</option>
+              <option value="trainer">Тренер</option>
+              <option value="analyst">Аналитик</option>
+              <option value="coordinator">Координатор</option>
+            </select>
+            <button class="btn-apply" onclick="applyFilter()">Применить</button>
+            <button class="btn-filter-icon"></button>
+          </div>
+        </div>
+
+        <button class="btn-create" onclick="showPage('pageForm')">+ Создать план</button>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Дата заполнения</th>
+              <th>Имя, роль</th>
+              <th>Период плана</th>
+              <th>Прогресс</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="plansTableBody">
+            <tr>
+              <td class="date-cell">03 сентября <span class="year">2026</span></td>
+              <td>
+                <div class="role-name">Супер Т.</div>
+                <div class="role-sub">Тренер</div>
+              </td>
+              <td>
+                <div class="period-display">
+                  <div class="period-range">03 сен — 03 окт 2026</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" style="width: 35%;"></div>
+                </div>
+                <div class="progress-text">7 / 20 тренировок</div>
+              </td>
+              <td><button class="btn-secondary" onclick="openViewModal(0)">Просмотр</button></td>
+            </tr>
+            <tr>
+              <td class="date-cell">15 августа <span class="year">2026</span></td>
+              <td>
+                <div class="role-name">Анна К.</div>
+                <div class="role-sub">Аналитик</div>
+              </td>
+              <td>
+                <div class="period-display">
+                  <div class="period-range">15 авг — 15 сен 2026</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" style="width: 100%; background: #2e7d32;"></div>
+                </div>
+                <div class="progress-text">18 / 18 тренировок</div>
+              </td>
+              <td><button class="btn-secondary" onclick="openViewModal(1)">Просмотр</button></td>
+            </tr>
+            <tr>
+              <td class="date-cell">01 июля <span class="year">2026</span></td>
+              <td>
+                <div class="role-name">Иван П.</div>
+                <div class="role-sub">Координатор</div>
+              </td>
+              <td>
+                <div class="period-display">
+                  <div class="period-range">01 июл — 01 авг 2026</div>
+                </div>
+              </td>
+              <td>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" style="width: 100%; background: #2e7d32;"></div>
+                </div>
+                <div class="progress-text">22 / 22 тренировок</div>
+              </td>
+              <td><button class="btn-secondary" onclick="openViewModal(2)">Просмотр</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="page" id="pageForm">
+      <div class="content">
+        <h1 class="player-name">Марк Богачев</h1>
+        
+        <div class="form-layout">
+          <div class="form-main">
+            <div class="eval-collapsible">
+              <div class="eval-collapsible-header" onclick="toggleEvalBlock()">
+                <span class="eval-collapsible-title"> Данные из оценки игрока</span>
+                <span class="eval-collapsible-arrow" id="evalArrow">▼</span>
+              </div>
+              <div class="eval-collapsible-body" id="evalBody">
+                <div class="eval-block">
+                  <div class="eval-block-title">Рекомендации по развитию</div>
+                  <div class="eval-block-role">Тренер · Супер Т. · 03 сен 2026</div>
+                  <div class="eval-block-text">Улучшить первое касание в условиях прессинга. Работать над точностью длинных передач (сейчас 45%, цель — 60%). Развивать скорость принятия решений при выходе из обороны.</div>
+                </div>
+                <div class="eval-block">
+                  <div class="eval-block-title">Рекомендации по развитию</div>
+                  <div class="eval-block-role">Аналитик · Анна К. · 15 авг 2026</div>
+                  <div class="eval-block-text">Повысить процент точных передач в последнюю треть. Работать над позиционным выбором при контратаках.</div>
+                </div>
+                <div class="eval-block">
+                  <div class="eval-block-title">Рекомендации по развитию</div>
+                  <div class="eval-block-role">Координатор · Иван П. · 01 июл 2026</div>
+                  <div class="eval-block-text">Развивать универсальность — играть на нескольких позициях. Улучшить коммуникацию с партнёрами.</div>
+                </div>
+                <div class="eval-block">
+                  <div class="eval-block-title">Сильные стороны</div>
+                  <div class="eval-block-role">Тренер · Супер Т. · 03 сен 2026</div>
+                  <div class="eval-block-text">Отличное чтение игры, высокий процент выигранных единоборств в обороне (78%). Хорошая игра головой.</div>
+                </div>
+                <div class="eval-block">
+                  <div class="eval-block-title">Сильные стороны</div>
+                  <div class="eval-block-role">Аналитик · Анна К. · 15 авг 2026</div>
+                  <div class="eval-block-text">Надёжность при стандартах в своей штрафной. Высокая дисциплина в оборонительных действиях.</div>
+                </div>
+                <div class="eval-block">
+                  <div class="eval-block-title">Сильные стороны</div>
+                  <div class="eval-block-role">Координатор · Иван П. · 01 июл 2026</div>
+                  <div class="eval-block-text">Лидерские качества, мотивация команды. Стабильность результатов от матча к матчу.</div>
+                </div>
+                <div class="eval-block">
+                  <div class="eval-block-title">Зоны роста</div>
+                  <div class="eval-block-role">Тренер · Супер Т. · 03 сен 2026</div>
+                  <div class="eval-block-text">Точность передач в последнюю треть (42%). Скорость стартового рывка. Игра правой ногой.</div>
+                </div>
+                <div class="eval-block">
+                  <div class="eval-block-title">Зоны роста</div>
+                  <div class="eval-block-role">Аналитик · Анна К. · 15 авг 2026</div>
+                  <div class="eval-block-text">Работа под прессингом — процент потерь мяча выше среднего. Нужно улучшить первое касание.</div>
+                </div>
+                <div class="eval-block">
+                  <div class="eval-block-title">Зоны роста</div>
+                  <div class="eval-block-role">Координатор · Иван П. · 01 июл 2026</div>
+                  <div class="eval-block-text">Физическая подготовка — выносливость во втором тайме. Скоростные качества.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-col">
+                <div class="form-label">Дата начала *</div>
+                <input type="date" class="form-input" id="dateStart" value="2026-10-03">
+                <div class="error-msg" id="dateStartError">Дата не может быть более чем на 7 дней в прошлом</div>
+              </div>
+              <div class="form-col">
+                <div class="form-label">Дата окончания *</div>
+                <input type="date" class="form-input" id="dateEnd" value="2026-11-03">
+                <div class="error-msg" id="dateEndError">Даты пересекаются с существующим планом</div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-label-main">Описание плана</div>
+              <textarea class="form-textarea" id="planDescription" placeholder="Сформулируйте цели плана на этот период...">Развитие игрового интеллекта и позиционной игры в обороне. Улучшение первого касания и точности коротких передач под давлением. Работа над чтением игры и выбором позиции при стандартах.</textarea>
+            </div>
+
+            <div class="form-section">
+              <div class="form-label-main">Ссылки</div>
+              <div id="linksContainer">
+                <div class="link-row">
+                  <input type="text" class="form-input" placeholder="Название" value="Видео разбор матча vs Актобе" style="flex:0.4;">
+                  <input type="text" class="form-input" placeholder="Ссылка" value="https://youtube.com/watch?v=example" style="flex:0.6;">
+                  <button class="btn-remove" onclick="removeLink(this)">✕</button>
+                </div>
+                <div class="link-row">
+                  <input type="text" class="form-input" placeholder="Название" value="Статья: Позиционная игра ЦЗ" style="flex:0.4;">
+                  <input type="text" class="form-input" placeholder="Ссылка" value="https://example.com/article" style="flex:0.6;">
+                  <button class="btn-remove" onclick="removeLink(this)">✕</button>
+                </div>
+              </div>
+              <button class="btn-add-link" onclick="addLink()">Добавить ссылку</button>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn-apply" onclick="savePlan()">Сохранить</button>
+              <button class="btn-secondary" onclick="showPage('pageTable')">Отмена</button>
+            </div>
+          </div>
+
+          <div class="form-sidebar">
+            <div class="progress-circle" id="formProgress">60%</div>
+            <div class="progress-item"><div class="progress-dot done"></div> Период плана</div>
+            <div class="progress-item"><div class="progress-dot done"></div> Описание плана</div>
+            <div class="progress-item"><div class="progress-dot done"></div> Ссылки</div>
+            <div class="progress-item"><div class="progress-dot"></div> Проверка пересечений</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="viewModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-label">ПЛАН ИГРОКА</div>
+      <button class="modal-close" onclick="closeViewModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <h1 class="player-name" style="font-size:32px;">Марк Богачев</h1>
+      
+      <div class="author-info">
+        <div class="author-date-block">
+          <span class="author-date-label">План создан</span>
+          <span class="author-date-value" id="modalDate">03 сен 2026</span>
+        </div>
+        <div class="author-divider"></div>
+        <div class="author-block">
+          <span class="author-label">Автор</span>
+          <span class="author-name" id="modalAuthorName">Супер Т.</span>
+          <span class="author-role" id="modalAuthorRole">Тренер</span>
+        </div>
+        <button class="btn-edit" id="modalActionBtn" onclick="handleModalAction()">Редактировать</button>
+      </div>
+
+      <div class="eval-collapsible" style="margin-bottom:24px;">
+        <div class="eval-collapsible-header" onclick="toggleEvalBlockModal()">
+          <span class="eval-collapsible-title">📋 Данные из оценки игрока</span>
+          <span class="eval-collapsible-arrow" id="evalArrowModal">▼</span>
+        </div>
+        <div class="eval-collapsible-body" id="evalBodyModal">
+          <div class="eval-block">
+            <div class="eval-block-title">Рекомендации по развитию</div>
+            <div class="eval-block-role">Тренер · Супер Т. · 03 сен 2026</div>
+            <div class="eval-block-text">Улучшить первое касание в условиях прессинга. Работать над точностью длинных передач (сейчас 45%, цель — 60%).</div>
+          </div>
+          <div class="eval-block">
+            <div class="eval-block-title">Рекомендации по развитию</div>
+            <div class="eval-block-role">Аналитик · Анна К. · 15 авг 2026</div>
+            <div class="eval-block-text">Повысить процент точных передач в последнюю треть.</div>
+          </div>
+          <div class="eval-block">
+            <div class="eval-block-title">Рекомендации по развитию</div>
+            <div class="eval-block-role">Координатор · Иван П. · 01 июл 2026</div>
+            <div class="eval-block-text">Развивать универсальность — играть на нескольких позициях.</div>
+          </div>
+          <div class="eval-block">
+            <div class="eval-block-title">Сильные стороны</div>
+            <div class="eval-block-role">Тренер · Супер Т. · 03 сен 2026</div>
+            <div class="eval-block-text">Отличное чтение игры, высокий процент выигранных единоборств в обороне (78%).</div>
+          </div>
+          <div class="eval-block">
+            <div class="eval-block-title">Сильные стороны</div>
+            <div class="eval-block-role">Аналитик · Анна К. · 15 авг 2026</div>
+            <div class="eval-block-text">Надёжность при стандартах в своей штрафной.</div>
+          </div>
+          <div class="eval-block">
+            <div class="eval-block-title">Сильные стороны</div>
+            <div class="eval-block-role">Координатор · Иван П. · 01 июл 2026</div>
+            <div class="eval-block-text">Лидерские качества, мотивация команды.</div>
+          </div>
+          <div class="eval-block">
+            <div class="eval-block-title">Зоны роста</div>
+            <div class="eval-block-role">Тренер · Супер Т. · 03 сен 2026</div>
+            <div class="eval-block-text">Точность передач в последнюю треть (42%). Скорость стартового рывка.</div>
+          </div>
+          <div class="eval-block">
+            <div class="eval-block-title">Зоны роста</div>
+            <div class="eval-block-role">Аналитик · Анна К. · 15 авг 2026</div>
+            <div class="eval-block-text">Работа под прессингом — процент потерь мяча выше среднего.</div>
+          </div>
+          <div class="eval-block">
+            <div class="eval-block-title">Зоны роста</div>
+            <div class="eval-block-role">Координатор · Иван П. · 01 июл 2026</div>
+            <div class="eval-block-text">Физическая подготовка — выносливость во втором тайме.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-label">Период плана</div>
+        <div style="font-size:18px; font-weight:600; margin-top:4px;" id="modalPeriod">03 сентября — 03 октября 2026</div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-label">Описание плана</div>
+        <div style="font-size:15px; line-height:1.7; margin-top:8px; color:#333;" id="modalDescription">Развитие игрового интеллекта и позиционной игры в обороне. Улучшение первого касания и точности коротких передач под давлением. Работа над чтением игры и выбором позиции при стандартах.</div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-label">Ссылки</div>
+        <div style="margin-top:12px;">
+          <div style="margin-bottom:8px;"><a href="#" style="color:#4a6cf7; font-size:14px; text-decoration:none;">Видео разбор матча vs Актобе</a> <span style="color:#888; font-size:12px;">— youtube.com</span></div>
+          <div><a href="#" style="color:#4a6cf7; font-size:14px; text-decoration:none;">Статья: Позиционная игра ЦЗ</a> <span style="color:#888; font-size:12px;">— example.com</span></div>
+        </div>
+      </div>
+
+      <div class="supplement-section" id="supplementSection" style="display:none;">
+        <div class="supplement-section-title">Дополнения</div>
+        <div id="supplementList"></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-label-main">Проведённые тренировки в этот период</div>
+        <div id="trainingsList">
+          <div class="training-item" onclick="openTrainingModal('Развитие первого касания', '05 сен 2026')">
+            <div class="training-name">Развитие первого касания</div>
+            <div class="training-date">05 сен 2026</div>
+          </div>
+          <div class="training-item" onclick="openTrainingModal('Позиционная игра в обороне', '08 сен 2026')">
+            <div class="training-name">Позиционная игра в обороне</div>
+            <div class="training-date">08 сен 2026</div>
+          </div>
+          <div class="training-item" onclick="openTrainingModal('Стандартные положения: оборона', '12 сен 2026')">
+            <div class="training-name">Стандартные положения: оборона</div>
+            <div class="training-date">12 сен 2026</div>
+          </div>
+          <div class="training-item" onclick="openTrainingModal('Длинные передачи под давлением', '15 сен 2026')">
+            <div class="training-name">Длинные передачи под давлением</div>
+            <div class="training-date">15 сен 2026</div>
+          </div>
+          <div class="training-item" onclick="openTrainingModal('Чтение игры и выбор позиции', '19 сен 2026')">
+            <div class="training-name">Чтение игры и выбор позиции</div>
+            <div class="training-date">19 сен 2026</div>
+          </div>
+          <div class="training-item" onclick="openTrainingModal('Игра 11x11: контрольная игра', '22 сен 2026')">
+            <div class="training-name">Игра 11x11: контрольная игра</div>
+            <div class="training-date">22 сен 2026</div>
+          </div>
+          <div class="training-item" onclick="openTrainingModal('Работа над слабыми зонами', '26 сен 2026')">
+            <div class="training-name">Работа над слабыми зонами</div>
+            <div class="training-date">26 сен 2026</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:32px;">
+        <button class="btn-secondary" onclick="closeViewModal()">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="supplementModal">
+  <div class="modal supplement-modal">
+    <div class="modal-header">
+      <div class="modal-header-label">ДОПОЛНЕНИЕ К ПЛАНУ</div>
+      <button class="modal-close" onclick="closeSupplementModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-label">Текст дополнения</div>
+      <textarea class="form-textarea" id="supplementText" placeholder="Введите текст дополнения к плану..."></textarea>
+      <div class="btn-row">
+        <button class="btn-apply" onclick="saveSupplement()">Сохранить</button>
+        <button class="btn-secondary" onclick="closeSupplementModal()">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="trainingModal">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-header">
+      <div class="modal-header-label">ТРЕНИРОВКА</div>
+      <button class="modal-close" onclick="closeTrainingModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <h2 style="font-size:24px; font-weight:700; margin-bottom:8px;" id="trainingTitle">Развитие первого касания</h2>
+      <div style="font-size:14px; color:#888; margin-bottom:24px;" id="trainingDate">05 сентября 2026</div>
+      
+      <div class="form-section">
+        <div class="form-label">Описание</div>
+        <div style="font-size:14px; line-height:1.6; color:#333; margin-top:8px;">Тренировка направлена на улучшение первого касания мяча в условиях давления соперника.</div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-label">Направленности</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+          <span style="padding:6px 12px; background:#f0f0f0; border-radius:6px; font-size:13px;">Техника</span>
+          <span style="padding:6px 12px; background:#f0f0f0; border-radius:6px; font-size:13px;">Первое касание</span>
+          <span style="padding:6px 12px; background:#f0f0f0; border-radius:6px; font-size:13px;">Приём мяча</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="closeTrainingModal()">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const plansData = [
+    { date: '03 сентября 2026', author: 'Супер Т.', role: 'Тренер', period: '03 сентября — 03 октября 2026', progress: 35, progressText: '7 / 20 тренировок', description: 'Развитие игрового интеллекта и позиционной игры в обороне.', trainings: 7, totalTrainings: 20, canEdit: true, createdAt: new Date('2026-09-03'), supplements: [] },
+    { date: '15 августа 2026', author: 'Анна К.', role: 'Аналитик', period: '15 августа — 15 сентября 2026', progress: 100, progressText: '18 / 18 тренировок', description: 'Тактическая подготовка к матчам второй части сезона.', trainings: 18, totalTrainings: 18, canEdit: false, createdAt: new Date('2026-08-15'), supplements: [{ text: 'Добавить работу над скоростью принятия решений в условиях прессинга. Особое внимание уделить игрокам молодежной группы.', date: '20 августа 2026' }] },
+    { date: '01 июля 2026', author: 'Иван П.', role: 'Координатор', period: '01 июля — 01 августа 2026', progress: 100, progressText: '22 / 22 тренировок', description: 'Адаптационный план после перехода в новую команду.', trainings: 22, totalTrainings: 22, canEdit: false, createdAt: new Date('2026-07-01'), supplements: [] }
+  ];
+
+  let currentPlanIndex = null;
+
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    if (pageId === 'pageForm') {
+      document.getElementById('topLabel').textContent = 'СОЗДАНИЕ ПЛАНА ИГРОКА';
+    } else {
+      document.getElementById('topLabel').textContent = 'ИГРОК';
+    }
+    window.scrollTo(0, 0);
+  }
+
+  function toggleEvalBlock() {
+    const body = document.getElementById('evalBody');
+    const arrow = document.getElementById('evalArrow');
+    body.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+
+  function toggleEvalBlockModal() {
+    const body = document.getElementById('evalBodyModal');
+    const arrow = document.getElementById('evalArrowModal');
+    body.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+
+  function openViewModal(index) {
+    const plan = plansData[index];
+    currentPlanIndex = index;
+    document.getElementById('modalDate').textContent = plan.date;
+    document.getElementById('modalAuthorName').textContent = plan.author;
+    document.getElementById('modalAuthorRole').textContent = plan.role;
+    document.getElementById('modalPeriod').textContent = plan.period;
+    document.getElementById('modalDescription').textContent = plan.description;
+    
+    const actionBtn = document.getElementById('modalActionBtn');
+    const daysSinceCreation = (new Date() - plan.createdAt) / (1000 * 60 * 60 * 24);
+    
+    if (plan.canEdit && daysSinceCreation <= 14) {
+      actionBtn.textContent = 'Редактировать';
+      actionBtn.onclick = function() {
+        closeViewModal();
+        showPage('pageForm');
+      };
+    } else {
+      actionBtn.textContent = 'Дополнить';
+      actionBtn.onclick = function() {
+        openSupplementModal();
+      };
+    }
+    
+    renderSupplements(plan.supplements);
+    
+    document.getElementById('viewModal').classList.add('active');
+  }
+
+  function renderSupplements(supplements) {
+    const section = document.getElementById('supplementSection');
+    const list = document.getElementById('supplementList');
+    
+    if (supplements.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+    
+    section.style.display = 'block';
+    list.innerHTML = '';
+    
+    supplements.forEach(sup => {
+      const item = document.createElement('div');
+      item.className = 'supplement-item';
+      item.innerHTML = `
+        <div class="supplement-date">${sup.date}</div>
+        <div class="supplement-text">${sup.text}</div>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  function handleModalAction() {
+  }
+
+  function openSupplementModal() {
+    document.getElementById('supplementText').value = '';
+    document.getElementById('supplementModal').classList.add('active');
+  }
+
+  function closeSupplementModal() {
+    document.getElementById('supplementModal').classList.remove('active');
+  }
+
+  function saveSupplement() {
+    const text = document.getElementById('supplementText').value.trim();
+    if (!text) {
+      alert('Введите текст дополнения');
+      return;
+    }
+    
+    if (currentPlanIndex !== null) {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+      
+      plansData[currentPlanIndex].supplements.push({
+        text: text,
+        date: dateStr
+      });
+      
+      closeSupplementModal();
+      closeViewModal();
+      
+      setTimeout(() => {
+        openViewModal(currentPlanIndex);
+      }, 300);
+    }
+  }
+
+  function closeViewModal() {
+    document.getElementById('viewModal').classList.remove('active');
+  }
+
+  function openTrainingModal(name, date) {
+    document.getElementById('trainingTitle').textContent = name;
+    document.getElementById('trainingDate').textContent = date;
+    document.getElementById('trainingModal').classList.add('active');
+  }
+
+  function closeTrainingModal() {
+    document.getElementById('trainingModal').classList.remove('active');
+  }
+
+  function applyFilter() {
+    const role = document.getElementById('roleFilter').value;
+    const rows = document.querySelectorAll('#plansTableBody tr');
+    rows.forEach(row => {
+      if (!role) { row.style.display = ''; return; }
+      const roleSub = row.querySelector('.role-sub');
+      if (roleSub) {
+        const roleText = roleSub.textContent.toLowerCase();
+        if (role === 'trainer' && roleText.includes('тренер')) row.style.display = '';
+        else if (role === 'analyst' && roleText.includes('аналитик')) row.style.display = '';
+        else if (role === 'coordinator' && roleText.includes('координатор')) row.style.display = '';
+        else row.style.display = 'none';
+      }
+    });
+  }
+
+  function addLink() {
+    const container = document.getElementById('linksContainer');
+    const row = document.createElement('div');
+    row.className = 'link-row';
+    row.innerHTML = `
+      <input type="text" class="form-input" placeholder="Название" style="flex:0.4;">
+      <input type="text" class="form-input" placeholder="Ссылка" style="flex:0.6;">
+      <button class="btn-remove" onclick="removeLink(this)">✕</button>
+    `;
+    container.appendChild(row);
+    updateFormProgress();
+  }
+
+  function removeLink(btn) {
+    btn.parentElement.remove();
+    updateFormProgress();
+  }
+
+  function updateFormProgress() {
+    const dateStart = document.getElementById('dateStart').value;
+    const dateEnd = document.getElementById('dateEnd').value;
+    const description = document.getElementById('planDescription').value;
+    const links = document.querySelectorAll('#linksContainer .link-row');
+    let filled = 0;
+    let total = 4;
+    if (dateStart && dateEnd) filled++;
+    if (description.trim()) filled++;
+    if (links.length > 0) filled++;
+    filled++;
+    const pct = Math.round((filled / total) * 100);
+    document.getElementById('formProgress').textContent = pct + '%';
+    const dots = document.querySelectorAll('.progress-dot');
+    dots.forEach((dot, i) => {
+      if (i === 0 && dateStart && dateEnd) dot.classList.add('done');
+      else if (i === 1 && description.trim()) dot.classList.add('done');
+      else if (i === 2 && links.length > 0) dot.classList.add('done');
+    });
+  }
+
+  function savePlan() {
+    const dateStart = document.getElementById('dateStart').value;
+    const dateEnd = document.getElementById('dateEnd').value;
+    const today = new Date();
+    const start = new Date(dateStart);
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    const startError = document.getElementById('dateStartError');
+    const endError = document.getElementById('dateEndError');
+    startError.classList.remove('visible');
+    endError.classList.remove('visible');
+
+    if (start < sevenDaysAgo) {
+      startError.classList.add('visible');
+      return;
+    }
+    if (new Date(dateEnd) <= start) {
+      endError.textContent = 'Дата окончания должна быть позже даты начала';
+      endError.classList.add('visible');
+      return;
+    }
+
+    alert('План успешно сохранён!');
+    showPage('pageTable');
+  }
+
+  function closeApp() {}
+
+  document.getElementById('dateStart').addEventListener('change', updateFormProgress);
+  document.getElementById('dateEnd').addEventListener('change', updateFormProgress);
+  document.getElementById('planDescription').addEventListener('input', updateFormProgress);
+  updateFormProgress();
+</script>
+
+</body>
+</html>
