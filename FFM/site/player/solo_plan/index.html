@@ -34,10 +34,10 @@
   
   .filters-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
   .filters-left { display: flex; align-items: center; gap: 12px; }
-  .filter-select { padding: 10px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; min-width: 180px; background: #fff; color: #666; appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%23666' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
-  .btn-apply { padding: 10px 24px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
-  .btn-apply:hover { background: #333; }
-  .btn-filter-icon { width: 40px; height: 40px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #666; }
+  .btn-create { padding: 12px 28px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; }
+  .btn-create:hover { background: #333; }
+  .btn-secondary { padding: 10px 20px; background: #fff; color: #1a1a1a; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; cursor: pointer; }
+  .btn-secondary:hover { background: #f5f5f5; }
   
   .data-table { width: 100%; border-collapse: collapse; }
   .data-table th { text-align: left; padding: 14px 16px; font-size: 14px; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e8e8e8; background: #fafafa; }
@@ -48,10 +48,9 @@
   .role-name { font-weight: 600; font-size: 14px; }
   .role-sub { font-size: 12px; color: #888; margin-top: 2px; }
   
-  .btn-create { padding: 12px 28px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; margin-bottom: 24px; }
-  .btn-create:hover { background: #333; }
-  .btn-secondary { padding: 10px 20px; background: #fff; color: #1a1a1a; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; cursor: pointer; }
-  .btn-secondary:hover { background: #f5f5f5; }
+  .progress-bar-container { width: 120px; height: 8px; background: #e8e8e8; border-radius: 4px; overflow: hidden; margin-top: 4px; }
+  .progress-bar-fill { height: 100%; background: #2e7d32; border-radius: 4px; }
+  .progress-text { font-size: 13px; color: #555; margin-top: 4px; }
   
   .form-section { margin-bottom: 32px; }
   .form-label { font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 500; }
@@ -62,6 +61,13 @@
   .form-textarea:focus { outline: none; border-color: #1a1a1a; }
   .form-row-2 { display: flex; gap: 16px; margin-bottom: 16px; }
   .form-col { flex: 1; }
+  
+  .link-row { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; }
+  .link-row input { flex: 1; }
+  .link-row .btn-remove { width: 36px; height: 36px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; color: #c62828; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  .btn-add-link { padding: 10px 20px; background: #f8f9fa; color: #4a6cf7; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+  .btn-add-link:hover { background: #e8f0fe; border-color: #4a6cf7; }
+  .btn-add-link::before { content: '+'; font-size: 16px; font-weight: 600; }
   
   .eval-collapsible { background: #f8f8f8; border-radius: 12px; margin-bottom: 24px; overflow: hidden; }
   .eval-collapsible-header { padding: 16px 20px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
@@ -87,9 +93,12 @@
   
   .training-item { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.15s; }
   .training-item:hover { background: #fafafa; }
-  .training-name { font-size: 14px; font-weight: 500; color: #1a1a1a; flex: 1; }
+  .training-info { flex: 1; }
+  .training-name { font-size: 14px; font-weight: 500; color: #1a1a1a; }
   .training-name:hover { color: #4a6cf7; text-decoration: underline; }
-  .training-date { font-size: 13px; color: #888; }
+  .training-author { font-size: 12px; color: #666; margin-top: 2px; }
+  .training-author-role { color: #888; }
+  .training-date { font-size: 13px; color: #888; white-space: nowrap; margin-left: 16px; }
   
   .form-layout { display: flex; gap: 40px; }
   .form-main { flex: 1; }
@@ -105,10 +114,6 @@
   
   .period-display { font-size: 14px; }
   .period-display .period-range { font-weight: 500; }
-  
-  .progress-bar-container { width: 120px; height: 8px; background: #e8e8e8; border-radius: 4px; overflow: hidden; margin-top: 4px; }
-  .progress-bar-fill { height: 100%; background: #2e7d32; border-radius: 4px; }
-  .progress-text { font-size: 13px; color: #555; margin-top: 4px; }
   
   .error-msg { color: #c62828; font-size: 13px; margin-top: 4px; display: none; }
   .error-msg.visible { display: block; }
@@ -133,18 +138,18 @@
   .supplement-date { font-size: 12px; color: #888; margin-bottom: 8px; }
   .supplement-text { font-size: 14px; line-height: 1.6; color: #333; white-space: pre-wrap; }
   
+  .comment-item { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px; border-left: 3px solid #6b6b7b; }
+  .comment-author { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 2px; }
+  .comment-role { font-size: 12px; color: #888; margin-bottom: 8px; }
+  .comment-date { font-size: 12px; color: #888; margin-bottom: 8px; }
+  .comment-text { font-size: 14px; line-height: 1.6; color: #333; white-space: pre-wrap; }
+  
   .supplement-modal { max-width: 600px; }
   .supplement-modal .modal-body { padding: 24px; }
   .supplement-modal .form-textarea { min-height: 160px; }
   .supplement-modal .btn-row { justify-content: flex-end; }
   
-  .link-row { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; }
-  .link-row input { flex: 1; }
-  .link-row .btn-remove { width: 36px; height: 36px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; color: #c62828; font-size: 18px; display: flex; align-items: center; justify-content: center; }
-  .link-row .btn-remove:hover { background: #fff5f5; border-color: #ffcdd2; }
-  .btn-add-link { padding: 10px 20px; background: #f8f9fa; color: #4a6cf7; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
-  .btn-add-link:hover { background: #e8f0fe; border-color: #4a6cf7; }
-  .btn-add-link::before { content: '+'; font-size: 16px; font-weight: 600; }
+  .planned-trainings-value { font-size: 14px; color: #1a1a1a; font-weight: 500; }
 </style>
 </head>
 <body>
@@ -161,7 +166,7 @@
     <div class="sidebar-icon"></div>
     <div class="sidebar-icon">💼</div>
     <div class="sidebar-icon">📊</div>
-    <div class="sidebar-icon">📈</div>
+    <div class="sidebar-icon"></div>
     <div class="sidebar-icon" style="font-size:12px;">Ру</div>
     <div class="sidebar-avatar">Т</div>
   </div>
@@ -189,18 +194,9 @@
 
         <div class="filters-row">
           <div class="filters-left">
-            <select class="filter-select" id="roleFilter">
-              <option value="">Роль</option>
-              <option value="trainer">Тренер</option>
-              <option value="analyst">Аналитик</option>
-              <option value="coordinator">Координатор</option>
-            </select>
-            <button class="btn-apply" onclick="applyFilter()">Применить</button>
-            <button class="btn-filter-icon"></button>
+            <button class="btn-create" onclick="showPage('pageForm')">+ Создать план</button>
           </div>
         </div>
-
-        <button class="btn-create" onclick="showPage('pageForm')">+ Создать план</button>
 
         <table class="data-table">
           <thead>
@@ -235,8 +231,8 @@
             <tr>
               <td class="date-cell">15 августа <span class="year">2026</span></td>
               <td>
-                <div class="role-name">Анна К.</div>
-                <div class="role-sub">Аналитик</div>
+                <div class="role-name">Супер Т.</div>
+                <div class="role-sub">Тренер</div>
               </td>
               <td>
                 <div class="period-display">
@@ -283,7 +279,7 @@
           <div class="form-main">
             <div class="eval-collapsible">
               <div class="eval-collapsible-header" onclick="toggleEvalBlock()">
-                <span class="eval-collapsible-title"> Данные из оценки игрока</span>
+                <span class="eval-collapsible-title">📋 Данные из оценки игрока</span>
                 <span class="eval-collapsible-arrow" id="evalArrow">▼</span>
               </div>
               <div class="eval-collapsible-body" id="evalBody">
@@ -349,6 +345,11 @@
             </div>
 
             <div class="form-section">
+              <div class="form-label">Планируемое число тренировок *</div>
+              <input type="number" class="form-input" id="plannedTrainings" value="20" min="1" style="width: 160px;">
+            </div>
+
+            <div class="form-section">
               <div class="form-label-main">Описание плана</div>
               <textarea class="form-textarea" id="planDescription" placeholder="Сформулируйте цели плана на этот период...">Развитие игрового интеллекта и позиционной игры в обороне. Улучшение первого касания и точности коротких передач под давлением. Работа над чтением игры и выбором позиции при стандартах.</textarea>
             </div>
@@ -371,7 +372,7 @@
             </div>
 
             <div class="btn-row">
-              <button class="btn-apply" onclick="savePlan()">Сохранить</button>
+              <button class="btn-create" onclick="savePlan()">Сохранить</button>
               <button class="btn-secondary" onclick="showPage('pageTable')">Отмена</button>
             </div>
           </div>
@@ -381,8 +382,7 @@
             <div class="progress-item"><div class="progress-dot done"></div> Период плана</div>
             <div class="progress-item"><div class="progress-dot done"></div> Описание плана</div>
             <div class="progress-item"><div class="progress-dot done"></div> Ссылки</div>
-            <div class="progress-item"><div class="progress-dot"></div> Проверка пересечений</div>
-          </div>
+              </div>
         </div>
       </div>
     </div>
@@ -472,6 +472,11 @@
       </div>
 
       <div class="form-section">
+        <div class="form-label">Планируемое число тренировок</div>
+        <div class="planned-trainings-value" id="modalPlannedTrainings">20</div>
+      </div>
+
+      <div class="form-section">
         <div class="form-label">Описание плана</div>
         <div style="font-size:15px; line-height:1.7; margin-top:8px; color:#333;" id="modalDescription">Развитие игрового интеллекта и позиционной игры в обороне. Улучшение первого касания и точности коротких передач под давлением. Работа над чтением игры и выбором позиции при стандартах.</div>
       </div>
@@ -489,38 +494,14 @@
         <div id="supplementList"></div>
       </div>
 
+      <div class="supplement-section" id="commentSection" style="display:none;">
+        <div class="supplement-section-title">Комментарии</div>
+        <div id="commentList"></div>
+      </div>
+
       <div class="form-section">
         <div class="form-label-main">Проведённые тренировки в этот период</div>
-        <div id="trainingsList">
-          <div class="training-item" onclick="openTrainingModal('Развитие первого касания', '05 сен 2026')">
-            <div class="training-name">Развитие первого касания</div>
-            <div class="training-date">05 сен 2026</div>
-          </div>
-          <div class="training-item" onclick="openTrainingModal('Позиционная игра в обороне', '08 сен 2026')">
-            <div class="training-name">Позиционная игра в обороне</div>
-            <div class="training-date">08 сен 2026</div>
-          </div>
-          <div class="training-item" onclick="openTrainingModal('Стандартные положения: оборона', '12 сен 2026')">
-            <div class="training-name">Стандартные положения: оборона</div>
-            <div class="training-date">12 сен 2026</div>
-          </div>
-          <div class="training-item" onclick="openTrainingModal('Длинные передачи под давлением', '15 сен 2026')">
-            <div class="training-name">Длинные передачи под давлением</div>
-            <div class="training-date">15 сен 2026</div>
-          </div>
-          <div class="training-item" onclick="openTrainingModal('Чтение игры и выбор позиции', '19 сен 2026')">
-            <div class="training-name">Чтение игры и выбор позиции</div>
-            <div class="training-date">19 сен 2026</div>
-          </div>
-          <div class="training-item" onclick="openTrainingModal('Игра 11x11: контрольная игра', '22 сен 2026')">
-            <div class="training-name">Игра 11x11: контрольная игра</div>
-            <div class="training-date">22 сен 2026</div>
-          </div>
-          <div class="training-item" onclick="openTrainingModal('Работа над слабыми зонами', '26 сен 2026')">
-            <div class="training-name">Работа над слабыми зонами</div>
-            <div class="training-date">26 сен 2026</div>
-          </div>
-        </div>
+        <div id="trainingsList"></div>
       </div>
 
       <div class="btn-row" style="margin-top:32px;">
@@ -533,14 +514,14 @@
 <div class="modal-overlay" id="supplementModal">
   <div class="modal supplement-modal">
     <div class="modal-header">
-      <div class="modal-header-label">ДОПОЛНЕНИЕ К ПЛАНУ</div>
-      <button class="modal-close" onclick="closeSupplementModal()">✕</button>
+      <div class="modal-header-label" id="supplementModalLabel">ДОПОЛНЕНИЕ К ПЛАНУ</div>
+      <button class="modal-close" onclick="closeSupplementModal()"></button>
     </div>
     <div class="modal-body">
-      <div class="form-label">Текст дополнения</div>
-      <textarea class="form-textarea" id="supplementText" placeholder="Введите текст дополнения к плану..."></textarea>
+      <div class="form-label" id="supplementFieldLabel">Текст дополнения</div>
+      <textarea class="form-textarea" id="supplementText" placeholder="Введите текст..."></textarea>
       <div class="btn-row">
-        <button class="btn-apply" onclick="saveSupplement()">Сохранить</button>
+        <button class="btn-create" onclick="saveSupplement()">Сохранить</button>
         <button class="btn-secondary" onclick="closeSupplementModal()">Отмена</button>
       </div>
     </div>
@@ -555,7 +536,8 @@
     </div>
     <div class="modal-body">
       <h2 style="font-size:24px; font-weight:700; margin-bottom:8px;" id="trainingTitle">Развитие первого касания</h2>
-      <div style="font-size:14px; color:#888; margin-bottom:24px;" id="trainingDate">05 сентября 2026</div>
+      <div style="font-size:14px; color:#888; margin-bottom:4px;" id="trainingDate">05 сентября 2026</div>
+      <div style="font-size:13px; color:#666; margin-bottom:24px;" id="trainingAuthor">Супер Т. · Тренер</div>
       
       <div class="form-section">
         <div class="form-label">Описание</div>
@@ -579,13 +561,68 @@
 </div>
 
 <script>
+  const currentUser = { name: 'Супер Т.', role: 'Тренер' };
+  
   const plansData = [
-    { date: '03 сентября 2026', author: 'Супер Т.', role: 'Тренер', period: '03 сентября — 03 октября 2026', progress: 35, progressText: '7 / 20 тренировок', description: 'Развитие игрового интеллекта и позиционной игры в обороне.', trainings: 7, totalTrainings: 20, canEdit: true, createdAt: new Date('2026-09-03'), supplements: [] },
-    { date: '15 августа 2026', author: 'Анна К.', role: 'Аналитик', period: '15 августа — 15 сентября 2026', progress: 100, progressText: '18 / 18 тренировок', description: 'Тактическая подготовка к матчам второй части сезона.', trainings: 18, totalTrainings: 18, canEdit: false, createdAt: new Date('2026-08-15'), supplements: [{ text: 'Добавить работу над скоростью принятия решений в условиях прессинга. Особое внимание уделить игрокам молодежной группы.', date: '20 августа 2026' }] },
-    { date: '01 июля 2026', author: 'Иван П.', role: 'Координатор', period: '01 июля — 01 августа 2026', progress: 100, progressText: '22 / 22 тренировок', description: 'Адаптационный план после перехода в новую команду.', trainings: 22, totalTrainings: 22, canEdit: false, createdAt: new Date('2026-07-01'), supplements: [] }
+    { 
+      date: '03 сентября 2026', author: 'Супер Т.', role: 'Тренер', 
+      period: '03 сентября — 03 октября 2026', 
+      progress: 35, progressText: '7 / 20 тренировок', 
+      description: 'Развитие игрового интеллекта и позиционной игры в обороне.', 
+      plannedTrainings: 20, trainings: 7, totalTrainings: 20, 
+      actionType: 'edit', createdAt: new Date('2026-09-03'), 
+      supplements: [], comments: [],
+      trainingsList: [
+        { name: 'Развитие первого касания', date: '05 сен 2026', author: 'Супер Т.', authorRole: 'Тренер' },
+        { name: 'Позиционная игра в обороне', date: '08 сен 2026', author: 'Супер Т.', authorRole: 'Тренер' },
+        { name: 'Стандартные положения: оборона', date: '12 сен 2026', author: 'Анна К.', authorRole: 'Аналитик' },
+        { name: 'Длинные передачи под давлением', date: '15 сен 2026', author: 'Супер Т.', authorRole: 'Тренер' },
+        { name: 'Чтение игры и выбор позиции', date: '19 сен 2026', author: 'Иван П.', authorRole: 'Координатор' },
+        { name: 'Игра 11x11: контрольная игра', date: '22 сен 2026', author: 'Супер Т.', authorRole: 'Тренер' },
+        { name: 'Работа над слабыми зонами', date: '26 сен 2026', author: 'Анна К.', authorRole: 'Аналитик' }
+      ]
+    },
+    { 
+      date: '15 августа 2026', author: 'Супер Т.', role: 'Тренер', 
+      period: '15 августа — 15 сентября 2026', 
+      progress: 100, progressText: '18 / 18 тренировок', 
+      description: 'Тактическая подготовка к матчам второй части сезона.', 
+      plannedTrainings: 18, trainings: 18, totalTrainings: 18, 
+      actionType: 'supplement', createdAt: new Date('2026-08-15'), 
+      supplements: [{ text: 'Добавить работу над скоростью принятия решений в условиях прессинга.', date: '20 августа 2026' }], 
+      comments: [],
+      trainingsList: [
+        { name: 'Тактический разбор соперника', date: '16 авг 2026', author: 'Супер Т.', authorRole: 'Тренер' },
+        { name: 'Работа в малых группах', date: '19 авг 2026', author: 'Супер Т.', authorRole: 'Тренер' },
+        { name: 'Контрольная игра', date: '23 авг 2026', author: 'Иван П.', authorRole: 'Координатор' },
+        { name: 'Анализ видео', date: '26 авг 2026', author: 'Анна К.', authorRole: 'Аналитик' },
+        { name: 'Индивидуальная работа', date: '30 авг 2026', author: 'Супер Т.', authorRole: 'Тренер' }
+      ]
+    },
+    { 
+      date: '01 июля 2026', author: 'Иван П.', role: 'Координатор', 
+      period: '01 июля — 01 августа 2026', 
+      progress: 100, progressText: '22 / 22 тренировок', 
+      description: 'Адаптационный план после перехода в новую команду.', 
+      plannedTrainings: 22, trainings: 22, totalTrainings: 22, 
+      actionType: 'comment', createdAt: new Date('2026-07-01'), 
+      supplements: [], 
+      comments: [{ text: 'Отличный план, хорошо проработаны тактические аспекты.', author: 'Супер Т.', role: 'Тренер', date: '20 августа 2026' }],
+      trainingsList: [
+        { name: 'Знакомство с командой', date: '02 июл 2026', author: 'Иван П.', authorRole: 'Координатор' },
+        { name: 'Тактическая система', date: '05 июл 2026', author: 'Супер Т.', authorRole: 'Тренер' },
+        { name: 'Физическая подготовка', date: '08 июл 2026', author: 'Анна К.', authorRole: 'Аналитик' },
+        { name: 'Игровая практика', date: '12 июл 2026', author: 'Иван П.', authorRole: 'Координатор' },
+        { name: 'Индивидуальный план', date: '15 июл 2026', author: 'Супер Т.', authorRole: 'Тренер' },
+        { name: 'Контрольный матч', date: '20 июл 2026', author: 'Иван П.', authorRole: 'Координатор' },
+        { name: 'Анализ прогресса', date: '25 июл 2026', author: 'Анна К.', authorRole: 'Аналитик' },
+        { name: 'Финальная оценка', date: '30 июл 2026', author: 'Иван П.', authorRole: 'Координатор' }
+      ]
+    }
   ];
 
   let currentPlanIndex = null;
+  let currentActionType = null;
 
   function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -620,26 +657,54 @@
     document.getElementById('modalAuthorRole').textContent = plan.role;
     document.getElementById('modalPeriod').textContent = plan.period;
     document.getElementById('modalDescription').textContent = plan.description;
+    document.getElementById('modalPlannedTrainings').textContent = plan.plannedTrainings;
     
     const actionBtn = document.getElementById('modalActionBtn');
-    const daysSinceCreation = (new Date() - plan.createdAt) / (1000 * 60 * 60 * 24);
     
-    if (plan.canEdit && daysSinceCreation <= 14) {
+    if (plan.actionType === 'edit') {
       actionBtn.textContent = 'Редактировать';
       actionBtn.onclick = function() {
         closeViewModal();
         showPage('pageForm');
       };
-    } else {
+    } else if (plan.actionType === 'supplement') {
       actionBtn.textContent = 'Дополнить';
       actionBtn.onclick = function() {
-        openSupplementModal();
+        openSupplementModal('supplement');
+      };
+    } else {
+      actionBtn.textContent = 'Комментировать';
+      actionBtn.onclick = function() {
+        openSupplementModal('comment');
       };
     }
     
+    renderTrainings(plan.trainingsList);
     renderSupplements(plan.supplements);
+    renderComments(plan.comments);
     
     document.getElementById('viewModal').classList.add('active');
+  }
+
+  function renderTrainings(trainings) {
+    const container = document.getElementById('trainingsList');
+    container.innerHTML = '';
+    
+    trainings.forEach(t => {
+      const item = document.createElement('div');
+      item.className = 'training-item';
+      item.onclick = function() {
+        openTrainingModal(t.name, t.date, t.author, t.authorRole);
+      };
+      item.innerHTML = `
+        <div class="training-info">
+          <div class="training-name">${t.name}</div>
+          <div class="training-author">${t.author} · <span class="training-author-role">${t.authorRole}</span></div>
+        </div>
+        <div class="training-date">${t.date}</div>
+      `;
+      container.appendChild(item);
+    });
   }
 
   function renderSupplements(supplements) {
@@ -665,22 +730,60 @@
     });
   }
 
+  function renderComments(comments) {
+    const section = document.getElementById('commentSection');
+    const list = document.getElementById('commentList');
+    
+    if (comments.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+    
+    section.style.display = 'block';
+    list.innerHTML = '';
+    
+    comments.forEach(cmt => {
+      const item = document.createElement('div');
+      item.className = 'comment-item';
+      item.innerHTML = `
+        <div class="comment-author">${cmt.author}</div>
+        <div class="comment-role">${cmt.role}</div>
+        <div class="comment-date">${cmt.date}</div>
+        <div class="comment-text">${cmt.text}</div>
+      `;
+      list.appendChild(item);
+    });
+  }
+
   function handleModalAction() {
   }
 
-  function openSupplementModal() {
+  function openSupplementModal(type) {
+    currentActionType = type;
     document.getElementById('supplementText').value = '';
+    
+    if (type === 'supplement') {
+      document.getElementById('supplementModalLabel').textContent = 'ДОПОЛНЕНИЕ К ПЛАНУ';
+      document.getElementById('supplementFieldLabel').textContent = 'Текст дополнения';
+      document.getElementById('supplementText').placeholder = 'Введите текст дополнения к плану...';
+    } else {
+      document.getElementById('supplementModalLabel').textContent = 'КОММЕНТАРИЙ К ПЛАНУ';
+      document.getElementById('supplementFieldLabel').textContent = 'Комментарий';
+      document.getElementById('supplementText').placeholder = 'Введите комментарий к плану...';
+    }
+    
     document.getElementById('supplementModal').classList.add('active');
   }
 
   function closeSupplementModal() {
     document.getElementById('supplementModal').classList.remove('active');
+    currentActionType = null;
   }
 
   function saveSupplement() {
     const text = document.getElementById('supplementText').value.trim();
     if (!text) {
-      alert('Введите текст дополнения');
+      alert('Введите текст');
       return;
     }
     
@@ -688,10 +791,19 @@
       const now = new Date();
       const dateStr = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
       
-      plansData[currentPlanIndex].supplements.push({
-        text: text,
-        date: dateStr
-      });
+      if (currentActionType === 'supplement') {
+        plansData[currentPlanIndex].supplements.push({
+          text: text,
+          date: dateStr
+        });
+      } else {
+        plansData[currentPlanIndex].comments.push({
+          text: text,
+          author: currentUser.name,
+          role: currentUser.role,
+          date: dateStr
+        });
+      }
       
       closeSupplementModal();
       closeViewModal();
@@ -706,30 +818,15 @@
     document.getElementById('viewModal').classList.remove('active');
   }
 
-  function openTrainingModal(name, date) {
+  function openTrainingModal(name, date, author, authorRole) {
     document.getElementById('trainingTitle').textContent = name;
     document.getElementById('trainingDate').textContent = date;
+    document.getElementById('trainingAuthor').textContent = author + ' · ' + authorRole;
     document.getElementById('trainingModal').classList.add('active');
   }
 
   function closeTrainingModal() {
     document.getElementById('trainingModal').classList.remove('active');
-  }
-
-  function applyFilter() {
-    const role = document.getElementById('roleFilter').value;
-    const rows = document.querySelectorAll('#plansTableBody tr');
-    rows.forEach(row => {
-      if (!role) { row.style.display = ''; return; }
-      const roleSub = row.querySelector('.role-sub');
-      if (roleSub) {
-        const roleText = roleSub.textContent.toLowerCase();
-        if (role === 'trainer' && roleText.includes('тренер')) row.style.display = '';
-        else if (role === 'analyst' && roleText.includes('аналитик')) row.style.display = '';
-        else if (role === 'coordinator' && roleText.includes('координатор')) row.style.display = '';
-        else row.style.display = 'none';
-      }
-    });
   }
 
   function addLink() {
