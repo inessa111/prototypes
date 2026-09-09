@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Протокол матча - Прототип</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
+.header { background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); padding: 20px 40px; color: white; }
+.header-top { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+.match-badge { background: white; color: #ff6b35; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 12px; }
+.status-badge { background: #4caf50; color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+.match-title { font-size: 24px; font-weight: bold; }
+.tabs { background: white; padding: 0 40px; display: flex; gap: 30px; border-bottom: 2px solid #e0e0e0; }
+.tab { padding: 12px 0; cursor: pointer; border-bottom: 3px solid transparent; font-size: 14px; }
+.tab.active { color: #ff6b35; border-bottom-color: #ff6b35; font-weight: bold; }
+.content { padding: 30px 40px; max-width: 1200px; margin: 0 auto; }
+.main-screen { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; }
+.edit-btn { position: absolute; top: 20px; right: 20px; background: #f0f0f0; color: #666; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.edit-btn:hover { background: #e0e0e0; }
+.teams-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.team-block { text-align: center; flex: 1; }
+.team-logo { width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #ff6b35; margin: 0 auto 8px; }
+.team-name { font-size: 16px; font-weight: bold; }
+.score-display { text-align: center; padding: 0 30px; }
+.score { font-size: 56px; font-weight: bold; }
+.score-sep { margin: 0 15px; color: #999; }
+.edit-form { display: none; }
+.edit-form.active { display: block; }
+.info-box { background: #fff3e0; border-left: 4px solid #ff9800; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; }
+.form-row { display: flex; gap: 15px; margin-bottom: 15px; align-items: center; }
+.form-group { flex: 1; }
+.form-label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: #555; }
+.form-select, .form-input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+.form-select:focus, .form-input:focus { outline: none; border-color: #ff6b35; }
+.section { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.section-title { font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+.sub-tabs { display: flex; gap: 0; border-bottom: 2px solid #e0e0e0; margin-bottom: 15px; }
+.sub-tab { padding: 8px 16px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; font-size: 13px; }
+.sub-tab.active { color: #ff6b35; border-bottom-color: #ff6b35; font-weight: bold; }
+.compact-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.compact-table th { background: #f9f9f9; padding: 8px 10px; text-align: left; font-weight: 600; border-bottom: 2px solid #e0e0e0; font-size: 12px; color: #666; }
+.compact-table td { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; }
+.compact-table tr:hover { background: #fafafa; }
+.compact-table input, .compact-table select { padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; width: 100%; }
+.compact-table input:focus, .compact-table select:focus { outline: none; border-color: #ff6b35; }
+.btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+.btn-primary { background: #ff6b35; color: white; }
+.btn-primary:hover { background: #e55a2b; }
+.btn-secondary { background: #e0e0e0; color: #333; }
+.btn-secondary:hover { background: #d0d0d0; }
+.btn-success { background: #4caf50; color: white; }
+.btn-success:hover { background: #45a049; }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+.icon-btn { width: 24px; height: 24px; border: none; background: transparent; cursor: pointer; color: #999; font-size: 14px; border-radius: 4px; }
+.icon-btn:hover { background: #f0f0f0; color: #ff6b35; }
+.event-tabs { display: flex; gap: 0; border-bottom: 2px solid #e0e0e0; margin-bottom: 15px; }
+.event-tab { padding: 8px 16px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; font-size: 13px; }
+.event-tab.active { color: #ff6b35; border-bottom-color: #ff6b35; font-weight: bold; }
+.event-content { display: none; }
+.event-content.active { display: block; }
+.add-event-btn { display: inline-flex; align-items: center; gap: 6px; background: #ff6b35; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 15px; }
+.add-event-btn:hover { background: #e55a2b; }
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.active { display: flex; }
+.modal { background: white; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-title { font-size: 18px; font-weight: bold; }
+.modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #999; }
+.modal-close:hover { color: #333; }
+.modal .form-row { margin-bottom: 12px; }
+.modal .form-label { font-size: 12px; }
+.modal .form-select, .modal .form-input { padding: 8px 10px; font-size: 13px; }
+.checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; }
+.checkbox-group input { width: 16px; height: 16px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; }
+.form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.empty-state { text-align: center; padding: 30px; color: #999; font-size: 13px; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.tag-yellow { background: #fff9c4; color: #f57f17; }
+.tag-red { background: #ffcdd2; color: #c62828; }
+.tag-goal { background: #c8e6c9; color: #2e7d32; }
+.pull-btn { background: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+.pull-btn:hover { background: #45a049; }
+.squad-header { display: flex; align-items: center; margin-bottom: 10px; }
+.squad-header-title { font-size: 14px; font-weight: bold; color: #ff6b35; }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <span class="match-badge">МАТЧ</span>
+    <span class="status-badge">ЗАВЕРШЁН</span>
+  </div>
+  <div class="match-title">Актобе 2010 × Астана 2010</div>
+</div>
+
+<div class="tabs">
+  <div class="tab">План матча</div>
+  <div class="tab">Трансляция</div>
+  <div class="tab active">Протокол</div>
+  <div class="tab">Отчет 0/3</div>
+</div>
+
+<div class="content">
+
+<div id="mainScreen" class="main-screen">
+  <button class="edit-btn" onclick="showEdit()">Редактировать</button>
+  <div class="teams-header">
+    <div class="team-block">
+      <div class="team-logo">А</div>
+      <div class="team-name">Актобе 2010</div>
+    </div>
+    <div class="score-display">
+      <div style="font-size:12px;color:#666;margin-bottom:5px;">Freedom QJ League u17 · Тур 18</div>
+      <div class="score">6 <span class="score-sep">–</span> 0</div>
+      <div style="font-size:12px;color:#666;margin-top:5px;">Матч завершён</div>
+    </div>
+    <div class="team-block">
+      <div class="team-logo">А</div>
+      <div class="team-name">Астана 2010</div>
+    </div>
+  </div>
+  <div style="text-align:center;color:#666;margin-top:20px;font-size:13px;">
+    Протокол матча заполнен. Для внесения изменений нажмите «Редактировать».
+  </div>
+</div>
+
+<div id="editForm" class="edit-form">
+  <div class="info-box">⚠️ Протокол можно заполнить в течение 2 недель после завершения матча.</div>
+
+  <!-- Тип матча -->
+  <div class="section">
+    <div class="section-title">Общая информация</div>
+    <div class="form-row">
+      <div class="form-group" style="max-width:300px;">
+        <label class="form-label">Тип матча</label>
+        <select class="form-select" id="matchType" onchange="onMatchTypeChange()">
+          <option value="regular" selected>Обычный</option>
+          <option value="double">Двусторонний</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Составы -->
+  <div class="section">
+    <div class="section-title">Составы команд</div>
+    <div class="sub-tabs">
+      <div class="sub-tab active" onclick="switchTeamTab(1, event)">Команда 1</div>
+      <div class="sub-tab" id="team2Tab" onclick="switchTeamTab(2, event)">Команда 2</div>
+    </div>
+
+    <!-- Команда 1 -->
+    <div id="teamTab1" class="team-tab-content">
+      <!-- Кнопка "Подтянуть из плана" - только для обычного матча -->
+      <button class="pull-btn" id="pullFromPlanBtn" onclick="pullFromPlan()">📥 Подтянуть состав из плана матча</button>
+
+      <div class="squad-header">
+        <span class="squad-header-title">Стартовый состав (0/11)</span>
+      </div>
+      <table class="compact-table" id="team1StartTable">
+        <thead><tr><th style="width:50px;">№</th><th>Игрок</th><th style="width:130px;">Амплуа</th><th style="width:40px;"></th></tr></thead>
+        <tbody id="team1StartBody"></tbody>
+      </table>
+      <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addPlayerRow('team1Start')">+ Добавить игрока</button>
+
+      <div class="squad-header" style="margin-top:20px;">
+        <span class="squad-header-title">Запасной состав (0/12)</span>
+      </div>
+      <table class="compact-table" id="team1BenchTable">
+        <thead><tr><th style="width:50px;">№</th><th>Игрок</th><th style="width:130px;">Амплуа</th><th style="width:40px;"></th></tr></thead>
+        <tbody id="team1BenchBody"></tbody>
+      </table>
+      <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addPlayerRow('team1Bench')">+ Добавить игрока</button>
+    </div>
+
+    <!-- Команда 2 -->
+    <div id="teamTab2" class="team-tab-content hidden">
+      <div class="squad-header">
+        <span class="squad-header-title">Стартовый состав (0/11)</span>
+      </div>
+      <table class="compact-table" id="team2StartTable">
+        <thead><tr><th style="width:50px;">№</th><th>Игрок</th><th style="width:130px;">Амплуа</th><th style="width:40px;"></th></tr></thead>
+        <tbody id="team2StartBody"></tbody>
+      </table>
+      <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addPlayerRow('team2Start')">+ Добавить игрока</button>
+
+      <div class="squad-header" style="margin-top:20px;">
+        <span class="squad-header-title">Запасной состав (0/12)</span>
+      </div>
+      <table class="compact-table" id="team2BenchTable">
+        <thead><tr><th style="width:50px;">№</th><th>Игрок</th><th style="width:130px;">Амплуа</th><th style="width:40px;"></th></tr></thead>
+        <tbody id="team2BenchBody"></tbody>
+      </table>
+      <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addPlayerRow('team2Bench')">+ Добавить игрока</button>
+    </div>
+  </div>
+
+  <!-- События -->
+  <div class="section">
+    <div class="section-title">События матча</div>
+    <div class="event-tabs">
+      <div class="event-tab active" onclick="switchEventTab('goals', event)">Голы</div>
+      <div class="event-tab" onclick="switchEventTab('penalties', event)">Незабитые пенальти</div>
+      <div class="event-tab" onclick="switchEventTab('cards', event)">Карточки</div>
+      <div class="event-tab" onclick="switchEventTab('subs', event)">Замены</div>
+    </div>
+
+    <!-- Голы -->
+    <div id="goalsContent" class="event-content active">
+      <button class="add-event-btn" onclick="openModal('goal')">+ Добавить гол</button>
+      <table class="compact-table" id="goalsTable">
+        <thead><tr><th>Команда</th><th>Минута</th><th>Тип</th><th>Игрок</th><th style="width:40px;"></th></tr></thead>
+        <tbody id="goalsBody"></tbody>
+      </table>
+      <div class="empty-state" id="goalsEmpty">Нет добавленных голов</div>
+    </div>
+
+    <!-- Пенальти -->
+    <div id="penaltiesContent" class="event-content">
+      <button class="add-event-btn" onclick="openModal('penalty')">+ Добавить пенальти</button>
+      <table class="compact-table" id="penaltiesTable">
+        <thead><tr><th>Команда</th><th>Минута</th><th>Игрок</th><th style="width:40px;"></th></tr></thead>
+        <tbody id="penaltiesBody"></tbody>
+      </table>
+      <div class="empty-state" id="penaltiesEmpty">Нет добавленных пенальти</div>
+    </div>
+
+    <!-- Карточки -->
+    <div id="cardsContent" class="event-content">
+      <button class="add-event-btn" onclick="openModal('card')">+ Добавить карточку</button>
+      <table class="compact-table" id="cardsTable">
+        <thead><tr><th>Команда</th><th>Минута</th><th>Тип</th><th>Игрок</th><th style="width:40px;"></th></tr></thead>
+        <tbody id="cardsBody"></tbody>
+      </table>
+      <div class="empty-state" id="cardsEmpty">Нет добавленных карточек</div>
+    </div>
+
+    <!-- Замены -->
+    <div id="subsContent" class="event-content">
+      <button class="add-event-btn" onclick="openModal('sub')">+ Добавить замену</button>
+      <table class="compact-table" id="subsTable">
+        <thead><tr><th>Команда</th><th>Минута</th><th>Ушёл</th><th>Вышел</th><th style="width:40px;"></th></tr></thead>
+        <tbody id="subsBody"></tbody>
+      </table>
+      <div class="empty-state" id="subsEmpty">Нет добавленных замен</div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button class="btn btn-secondary" onclick="showMain()">Отмена</button>
+    <button class="btn btn-success" onclick="saveProtocol()">Сохранить протокол</button>
+  </div>
+</div>
+
+</div>
+
+<!-- Goal Modal -->
+<div class="modal-overlay" id="goalModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Добавить гол</div>
+      <button class="modal-close" onclick="closeModal('goalModal')">×</button>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="goalOwn" onchange="toggleGoalFields()">
+      <label for="goalOwn">Чужая команда</label>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Минута *</label>
+        <input type="number" class="form-input" id="goalMinute" min="1" max="120">
+      </div>
+      <div class="form-group" id="goalTypeGroup">
+        <label class="form-label">Тип гола</label>
+        <select class="form-select" id="goalType" onchange="toggleGoalAssist()">
+          <option value="regular">С игры</option>
+          <option value="owngoal">Автогол</option>
+          <option value="penalty">Пенальти</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row" id="goalPlayerRow">
+      <div class="form-group">
+        <label class="form-label">Игрок</label>
+        <select class="form-select" id="goalPlayer">
+          <option value="">—</option>
+          <option>М. Нурланов</option>
+          <option>А. Байжанов</option>
+          <option>А. Бактыбаев</option>
+        </select>
+      </div>
+      <div class="form-group" id="goalAssistGroup">
+        <label class="form-label">Ассистент</label>
+        <select class="form-select" id="goalAssist">
+          <option value="">—</option>
+          <option>Н. Ертлеуов</option>
+          <option>Н. Базарбаев</option>
+          <option>М. Нурланов</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" id="goalOpponentTextGroup" style="display:none;">
+      <label class="form-label">Комментарий</label>
+      <input type="text" class="form-input" id="goalOpponentText" placeholder="Введите комментарий">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('goalModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="addGoal()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Penalty Modal -->
+<div class="modal-overlay" id="penaltyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Добавить незабитый пенальти</div>
+      <button class="modal-close" onclick="closeModal('penaltyModal')">×</button>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="penaltyOwn" onchange="togglePenaltyFields()">
+      <label for="penaltyOwn">Чужая команда</label>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Минута *</label>
+        <input type="number" class="form-input" id="penaltyMinute" min="1" max="120">
+      </div>
+    </div>
+    <div class="form-group" id="penaltyPlayerGroup">
+      <label class="form-label">Игрок</label>
+      <select class="form-select" id="penaltyPlayer">
+        <option value="">—</option>
+        <option>М. Нурланов</option>
+        <option>А. Байжанов</option>
+      </select>
+    </div>
+    <div class="form-group" id="penaltyOpponentTextGroup" style="display:none;">
+      <label class="form-label">Комментарий</label>
+      <input type="text" class="form-input" id="penaltyOpponentText" placeholder="Введите комментарий">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('penaltyModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="addPenalty()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Card Modal -->
+<div class="modal-overlay" id="cardModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Добавить карточку</div>
+      <button class="modal-close" onclick="closeModal('cardModal')">×</button>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="cardOwn" onchange="toggleCardFields()">
+      <label for="cardOwn">Чужая команда</label>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Минута *</label>
+        <input type="number" class="form-input" id="cardMinute" min="1" max="120">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Тип карточки</label>
+        <select class="form-select" id="cardType">
+          <option value="yellow">Жёлтая</option>
+          <option value="secondYellow">Вторая жёлтая</option>
+          <option value="red">Красная</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" id="cardPlayerGroup">
+      <label class="form-label">Игрок</label>
+      <select class="form-select" id="cardPlayer">
+        <option value="">—</option>
+        <option>Р. Орымбек</option>
+        <option>А. Бексултан</option>
+        <option>А. Отеген</option>
+      </select>
+    </div>
+    <div class="form-group" id="cardOpponentTextGroup" style="display:none;">
+      <label class="form-label">Комментарий</label>
+      <input type="text" class="form-input" id="cardOpponentText" placeholder="Введите комментарий">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('cardModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="addCard()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sub Modal -->
+<div class="modal-overlay" id="subModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Добавить замену</div>
+      <button class="modal-close" onclick="closeModal('subModal')">×</button>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="subOwn" onchange="toggleSubFields()">
+      <label for="subOwn">Чужая команда</label>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Минута *</label>
+        <input type="number" class="form-input" id="subMinute" min="1" max="120">
+      </div>
+    </div>
+    <div class="form-row" id="subPlayersRow">
+      <div class="form-group">
+        <label class="form-label">Ушёл с поля</label>
+        <select class="form-select" id="subOut">
+          <option value="">—</option>
+          <option>Д. Цой</option>
+          <option>А. Бексултан</option>
+          <option>А. Куандыкулы</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Вышел на поле</label>
+        <select class="form-select" id="subIn">
+          <option value="">—</option>
+          <option>А. Сапар</option>
+          <option>А. Жанат</option>
+          <option>А. Бабашев</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" id="subOpponentTextGroup" style="display:none;">
+      <label class="form-label">Комментарий</label>
+      <input type="text" class="form-input" id="subOpponentText" placeholder="Введите комментарий">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('subModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="addSub()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const players = [
+  {name:'Кадир Азизхан', pos:'Вратарь'},
+  {name:'Орын Абылай', pos:'Защитник'},
+  {name:'Отеген Абдуллах', pos:'Защитник'},
+  {name:'Байжанов Арсен', pos:'Защитник'},
+  {name:'Кайратулы Айдар', pos:'Защитник'},
+  {name:'Уразбаев Мансур', pos:'Полузащитник'},
+  {name:'Нурланов Мирас', pos:'Полузащитник'},
+  {name:'Бижанов Нуралы', pos:'Полузащитник'},
+  {name:'Кенжин Алихан', pos:'Полузащитник'},
+  {name:'Рахматуллаев Дамир', pos:'Нападающий'},
+  {name:'Ерсахимов Шамиль', pos:'Нападающий'},
+];
+
+let events = {goals:[], penalties:[], cards:[], subs:[]};
+
+function showEdit() {
+  document.getElementById('mainScreen').style.display = 'none';
+  document.getElementById('editForm').classList.add('active');
+  onMatchTypeChange();
+}
+function showMain() {
+  document.getElementById('editForm').classList.remove('active');
+  document.getElementById('mainScreen').style.display = 'block';
+}
+
+function onMatchTypeChange() {
+  const type = document.getElementById('matchType').value;
+  const team2Tab = document.getElementById('team2Tab');
+  const teamTab2 = document.getElementById('teamTab2');
+  const pullBtn = document.getElementById('pullFromPlanBtn');
+
+  if (type === 'double') {
+    team2Tab.classList.remove('hidden');
+    teamTab2.classList.remove('hidden');
+    pullBtn.classList.add('hidden');
+  } else {
+    team2Tab.classList.add('hidden');
+    teamTab2.classList.add('hidden');
+    pullBtn.classList.remove('hidden');
+    // Переключиться на команду 1
+    switchTeamTab(1, null, true);
+  }
+}
+
+function switchTeamTab(n, evt, force) {
+  const type = document.getElementById('matchType').value;
+  if (n === 2 && type !== 'double' && !force) return;
+
+  document.querySelectorAll('#editForm .section .sub-tabs .sub-tab').forEach(t => t.classList.remove('active'));
+  if (evt) evt.target.classList.add('active');
+  else {
+    const tabs = document.querySelectorAll('#editForm .section .sub-tabs .sub-tab');
+    tabs[n-1].classList.add('active');
+  }
+  document.getElementById('teamTab1').classList.toggle('hidden', n !== 1);
+  document.getElementById('teamTab2').classList.toggle('hidden', n !== 2);
+}
+
+function addPlayerRow(tableId) {
+  const tbody = document.getElementById(tableId + 'Body');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="number" class="form-input" style="width:50px;" min="1" max="99" placeholder="№"></td>
+    <td>
+      <select class="form-select" onchange="onPlayerSelect(this, '${tableId}')">
+        <option value="">Выберите игрока</option>
+        ${players.map(p => `<option data-pos="${p.pos}" data-num="${Math.floor(Math.random()*99)+1}">${p.name}</option>`).join('')}
+      </select>
+    </td>
+    <td>
+      <select class="form-select position-select">
+        <option value="">—</option>
+        <option>Вратарь</option>
+        <option>Защитник</option>
+        <option>Полузащитник</option>
+        <option>Нападающий</option>
+      </select>
+    </td>
+    <td><button class="icon-btn" onclick="this.closest('tr').remove()">✕</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function onPlayerSelect(sel, tableId) {
+  const opt = sel.options[sel.selectedIndex];
+  const pos = opt.getAttribute('data-pos') || '';
+  const num = opt.getAttribute('data-num') || '';
+  const row = sel.closest('tr');
+  const numberInput = row.querySelector('input[type="number"]');
+  const positionSelect = row.querySelector('.position-select');
+  if (numberInput) numberInput.value = num;
+  if (positionSelect) positionSelect.value = pos;
+}
+
+function pullFromPlan() {
+  if (confirm('Подтянуть состав из плана матча?')) {
+    const tbody = document.getElementById('team1StartBody');
+    tbody.innerHTML = '';
+    players.slice(0, 5).forEach(p => {
+      const tr = document.createElement('tr');
+      const num = Math.floor(Math.random()*99)+1;
+      tr.innerHTML = `
+        <td><input type="number" class="form-input" style="width:50px;" min="1" max="99" value="${num}"></td>
+        <td>
+          <select class="form-select" onchange="onPlayerSelect(this, 'team1Start')">
+            <option value="">Выберите игрока</option>
+            ${players.map(pl => `<option data-pos="${pl.pos}" data-num="${Math.floor(Math.random()*99)+1}" ${pl.name===p.name?'selected':''}>${pl.name}</option>`).join('')}
+          </select>
+        </td>
+        <td>
+          <select class="form-select position-select">
+            <option value="">—</option>
+            <option ${p.pos==='Вратарь'?'selected':''}>Вратарь</option>
+            <option ${p.pos==='Защитник'?'selected':''}>Защитник</option>
+            <option ${p.pos==='Полузащитник'?'selected':''}>Полузащитник</option>
+            <option ${p.pos==='Нападающий'?'selected':''}>Нападающий</option>
+          </select>
+        </td>
+        <td><button class="icon-btn" onclick="this.closest('tr').remove()">✕</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    alert('Состав подтянут из плана матча');
+  }
+}
+
+function switchEventTab(name, evt) {
+  document.querySelectorAll('.event-tab').forEach(t => t.classList.remove('active'));
+  if (evt) evt.target.classList.add('active');
+  document.querySelectorAll('.event-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(name + 'Content').classList.add('active');
+}
+
+function openModal(type) {
+  document.getElementById(type + 'Modal').classList.add('active');
+  if (type === 'goal') {
+    document.getElementById('goalMinute').value = '';
+    document.getElementById('goalPlayer').value = '';
+    document.getElementById('goalAssist').value = '';
+    document.getElementById('goalOpponentText').value = '';
+    document.getElementById('goalOwn').checked = false;
+    toggleGoalFields();
+  } else if (type === 'penalty') {
+    document.getElementById('penaltyMinute').value = '';
+    document.getElementById('penaltyPlayer').value = '';
+    document.getElementById('penaltyOpponentText').value = '';
+    document.getElementById('penaltyOwn').checked = false;
+    togglePenaltyFields();
+  } else if (type === 'card') {
+    document.getElementById('cardMinute').value = '';
+    document.getElementById('cardPlayer').value = '';
+    document.getElementById('cardOpponentText').value = '';
+    document.getElementById('cardOwn').checked = false;
+    toggleCardFields();
+  } else if (type === 'sub') {
+    document.getElementById('subMinute').value = '';
+    document.getElementById('subOut').value = '';
+    document.getElementById('subIn').value = '';
+    document.getElementById('subOpponentText').value = '';
+    document.getElementById('subOwn').checked = false;
+    toggleSubFields();
+  }
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+function toggleGoalFields() {
+  const own = !document.getElementById('goalOwn').checked;
+  document.getElementById('goalPlayerRow').style.display = own ? 'flex' : 'none';
+  document.getElementById('goalOpponentTextGroup').style.display = own ? 'none' : 'block';
+  document.getElementById('goalTypeGroup').style.display = 'block';
+  toggleGoalAssist();
+}
+function toggleGoalAssist() {
+  const own = !document.getElementById('goalOwn').checked;
+  const type = document.getElementById('goalType').value;
+  document.getElementById('goalAssistGroup').style.display = (own && type === 'regular') ? 'block' : 'none';
+}
+function togglePenaltyFields() {
+  const own = !document.getElementById('penaltyOwn').checked;
+  document.getElementById('penaltyPlayerGroup').style.display = own ? 'block' : 'none';
+  document.getElementById('penaltyOpponentTextGroup').style.display = own ? 'none' : 'block';
+}
+function toggleCardFields() {
+  const own = !document.getElementById('cardOwn').checked;
+  document.getElementById('cardPlayerGroup').style.display = own ? 'block' : 'none';
+  document.getElementById('cardOpponentTextGroup').style.display = own ? 'none' : 'block';
+}
+function toggleSubFields() {
+  const own = !document.getElementById('subOwn').checked;
+  document.getElementById('subPlayersRow').style.display = own ? 'flex' : 'none';
+  document.getElementById('subOpponentTextGroup').style.display = own ? 'none' : 'block';
+}
+
+function getTeamName(own) {
+  return own ? 'Актобе 2010' : 'Астана 2010';
+}
+function getGoalTypeName(v) {
+  return {regular:'С игры', owngoal:'Автогол', penalty:'Пенальти'}[v] || '—';
+}
+function getCardTypeName(v) {
+  return {yellow:'Жёлтая', secondYellow:'Вторая жёлтая', red:'Красная'}[v] || '—';
+}
+
+function addGoal() {
+  const minute = document.getElementById('goalMinute').value;
+  if (!minute) { alert('Укажите минуту'); return; }
+  const own = !document.getElementById('goalOwn').checked;
+  const type = document.getElementById('goalType').value;
+  let player = '';
+  if (own) player = document.getElementById('goalPlayer').value;
+  else player = document.getElementById('goalOpponentText').value;
+  events.goals.push({team: getTeamName(own), minute, type, player});
+  renderGoals();
+  closeModal('goalModal');
+}
+function renderGoals() {
+  const tbody = document.getElementById('goalsBody');
+  const empty = document.getElementById('goalsEmpty');
+  tbody.innerHTML = '';
+  if (events.goals.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  events.goals.forEach((g, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${g.team}</td><td>${g.minute}'</td><td><span class="tag tag-goal">${getGoalTypeName(g.type)}</span></td><td>${g.player || '—'}</td><td><button class="icon-btn" onclick="events.goals.splice(${i},1);renderGoals()">✕</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function addPenalty() {
+  const minute = document.getElementById('penaltyMinute').value;
+  if (!minute) { alert('Укажите минуту'); return; }
+  const own = !document.getElementById('penaltyOwn').checked;
+  let player = own ? document.getElementById('penaltyPlayer').value : document.getElementById('penaltyOpponentText').value;
+  events.penalties.push({team: getTeamName(own), minute, player});
+  renderPenalties();
+  closeModal('penaltyModal');
+}
+function renderPenalties() {
+  const tbody = document.getElementById('penaltiesBody');
+  const empty = document.getElementById('penaltiesEmpty');
+  tbody.innerHTML = '';
+  if (events.penalties.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  events.penalties.forEach((p, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${p.team}</td><td>${p.minute}'</td><td>${p.player || '—'}</td><td><button class="icon-btn" onclick="events.penalties.splice(${i},1);renderPenalties()">✕</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function addCard() {
+  const minute = document.getElementById('cardMinute').value;
+  if (!minute) { alert('Укажите минуту'); return; }
+  const own = !document.getElementById('cardOwn').checked;
+  const type = document.getElementById('cardType').value;
+  let player = own ? document.getElementById('cardPlayer').value : document.getElementById('cardOpponentText').value;
+  events.cards.push({team: getTeamName(own), minute, type, player});
+  renderCards();
+  closeModal('cardModal');
+}
+function renderCards() {
+  const tbody = document.getElementById('cardsBody');
+  const empty = document.getElementById('cardsEmpty');
+  tbody.innerHTML = '';
+  if (events.cards.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  events.cards.forEach((c, i) => {
+    const tagClass = c.type === 'red' ? 'tag-red' : 'tag-yellow';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${c.team}</td><td>${c.minute}'</td><td><span class="tag ${tagClass}">${getCardTypeName(c.type)}</span></td><td>${c.player || '—'}</td><td><button class="icon-btn" onclick="events.cards.splice(${i},1);renderCards()">✕</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function addSub() {
+  const minute = document.getElementById('subMinute').value;
+  if (!minute) { alert('Укажите минуту'); return; }
+  const own = !document.getElementById('subOwn').checked;
+  let out = '', inn = '';
+  if (own) { out = document.getElementById('subOut').value; inn = document.getElementById('subIn').value; }
+  else { const text = document.getElementById('subOpponentText').value; out = text; inn = ''; }
+  events.subs.push({team: getTeamName(own), minute, out, inn});
+  renderSubs();
+  closeModal('subModal');
+}
+function renderSubs() {
+  const tbody = document.getElementById('subsBody');
+  const empty = document.getElementById('subsEmpty');
+  tbody.innerHTML = '';
+  if (events.subs.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  events.subs.forEach((s, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${s.team}</td><td>${s.minute}'</td><td>${s.out || '—'}</td><td>${s.inn || '—'}</td><td><button class="icon-btn" onclick="events.subs.splice(${i},1);renderSubs()">✕</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function saveProtocol() {
+  if (confirm('Сохранить протокол?')) {
+    alert('Протокол сохранён');
+    showMain();
+  }
+}
+
+window.onload = function() {
+  addPlayerRow('team1Start');
+  addPlayerRow('team1Bench');
+};
+</script>
+</body>
+</html>
