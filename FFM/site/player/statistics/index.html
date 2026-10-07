@@ -14,9 +14,7 @@
     min-height: 100vh;
   }
 
-  .main {
-    min-height: 100vh;
-  }
+  .main { min-height: 100vh; }
 
   .top-bar {
     background: #6b7280;
@@ -35,17 +33,10 @@
     letter-spacing: 0.5px;
   }
   .close-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.3);
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(0,0,0,0.3); color: #fff; border: none;
+    cursor: pointer; font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
   }
 
   .content {
@@ -55,35 +46,24 @@
   }
 
   .player-name {
-    font-size: 42px;
-    font-weight: 800;
-    margin-bottom: 24px;
-    color: #1a1a2e;
+    font-size: 42px; font-weight: 800;
+    margin-bottom: 24px; color: #1a1a2e;
   }
 
   .tabs {
-    display: flex;
-    gap: 8px;
+    display: flex; gap: 8px;
     border-bottom: 2px solid #e5e7eb;
-    margin-bottom: 32px;
-    overflow-x: auto;
+    margin-bottom: 32px; overflow-x: auto;
   }
   .tab {
-    padding: 12px 20px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #6b7280;
-    cursor: pointer;
+    padding: 12px 20px; font-size: 15px; font-weight: 500;
+    color: #6b7280; cursor: pointer;
     border-bottom: 3px solid transparent;
-    margin-bottom: -2px;
-    transition: all 0.2s;
-    white-space: nowrap;
+    margin-bottom: -2px; transition: all 0.2s; white-space: nowrap;
   }
   .tab:hover { color: #1a1a2e; }
   .tab.active {
-    color: #4f46e5;
-    border-bottom-color: #4f46e5;
-    font-weight: 600;
+    color: #4f46e5; border-bottom-color: #4f46e5; font-weight: 600;
   }
 
   .tab-content { display: none; }
@@ -96,496 +76,243 @@
     gap: 24px;
   }
   .photo-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 24px;
-    position: relative;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    background: #fff; border-radius: 20px; padding: 24px;
+    position: relative; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
   }
   .jersey-number {
-    position: absolute;
-    top: 20px;
-    right: 24px;
-    font-size: 48px;
-    font-weight: 800;
-    color: #6b7280;
-    opacity: 0.6;
+    position: absolute; top: 20px; right: 24px;
+    font-size: 48px; font-weight: 800; color: #6b7280; opacity: 0.6;
   }
   .player-photo {
-    width: 100%;
-    height: 380px;
+    width: 100%; height: 380px;
     background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
     border-radius: 16px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    overflow: hidden;
+    display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
   }
   .player-photo-placeholder {
-    width: 200px;
-    height: 320px;
+    width: 200px; height: 320px;
     background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
     border-radius: 12px 12px 0 0;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
   }
   .player-photo-placeholder::before {
-    content: '12';
-    font-size: 72px;
-    font-weight: 800;
-    color: #fff;
-    margin-top: 80px;
+    content: '12'; font-size: 72px; font-weight: 800; color: #fff; margin-top: 80px;
   }
   .player-photo-placeholder::after {
-    content: '';
-    position: absolute;
-    top: 30px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: #fbbf24;
+    content: ''; position: absolute; top: 30px;
+    width: 60px; height: 60px; border-radius: 50%; background: #fbbf24;
   }
 
   .info-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 28px;
+    background: #fff; border-radius: 20px; padding: 28px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.04);
   }
   .team-badge {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #f3f4f6;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6;
   }
   .team-logo {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
+    width: 44px; height: 44px; border-radius: 50%;
     background: linear-gradient(135deg, #1e40af, #3b82f6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-weight: 700;
-    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 14px;
   }
-  .team-name {
-    font-size: 18px;
-    font-weight: 700;
-  }
-  .team-plus {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .team-name { font-size: 18px; font-weight: 700; }
+  .team-plus { margin-left: auto; display: flex; align-items: center; gap: 8px; }
   .team-plus-badge {
-    background: #f3f4f6;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
+    background: #f3f4f6; padding: 6px 12px;
+    border-radius: 20px; font-size: 13px; font-weight: 600;
   }
 
   .stats-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;
   }
   .stat-big { text-align: left; }
   .stat-big-value {
-    font-size: 42px;
-    font-weight: 800;
-    color: #1a1a2e;
-    line-height: 1;
+    font-size: 42px; font-weight: 800; color: #1a1a2e; line-height: 1;
   }
   .stat-big-value sup {
-    font-size: 16px;
-    font-weight: 500;
-    color: #6b7280;
-    vertical-align: super;
+    font-size: 16px; font-weight: 500; color: #6b7280; vertical-align: super;
   }
   .stat-big-label {
-    font-size: 11px;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 4px;
+    font-size: 11px; color: #9ca3af; text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 4px;
   }
-  .stat-big-sub {
-    font-size: 13px;
-    color: #6b7280;
-    margin-top: 2px;
-  }
+  .stat-big-sub { font-size: 13px; color: #6b7280; margin-top: 2px; }
 
-  .meta-row {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
+  .meta-row { display: flex; gap: 16px; margin-bottom: 24px; }
   .meta-item {
-    flex: 1;
-    background: #f9fafb;
-    padding: 16px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    flex: 1; background: #f9fafb; padding: 16px;
+    border-radius: 12px; display: flex; align-items: center; gap: 12px;
   }
   .meta-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
+    width: 40px; height: 40px; border-radius: 10px;
+    background: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px;
   }
   .meta-label {
-    font-size: 11px;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;
   }
-  .meta-value {
-    font-size: 16px;
-    font-weight: 600;
-  }
+  .meta-value { font-size: 16px; font-weight: 600; }
 
   .stats-summary { margin-top: 8px; }
   .stats-summary-title {
-    font-size: 12px;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
+    font-size: 12px; color: #9ca3af; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 8px;
   }
   .stats-summary-value {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 16px;
+    font-size: 22px; font-weight: 600; margin-bottom: 16px;
   }
   .stats-summary-value span { color: #9ca3af; font-weight: 400; }
 
   .position-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
   }
   .position-bar-fill {
-    flex: 1;
-    height: 10px;
-    background: #e5e7eb;
-    border-radius: 5px;
-    overflow: hidden;
+    flex: 1; height: 10px; background: #e5e7eb; border-radius: 5px; overflow: hidden;
   }
   .position-bar-fill-inner {
-    height: 100%;
-    background: linear-gradient(90deg, #10b981, #34d399);
-    border-radius: 5px;
+    height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 5px;
   }
-  .position-bar-label {
-    font-size: 14px;
-    font-weight: 600;
-    min-width: 50px;
-  }
-  .position-bar-min {
-    font-size: 14px;
-    color: #6b7280;
-    min-width: 40px;
-  }
+  .position-bar-label { font-size: 14px; font-weight: 600; min-width: 50px; }
+  .position-bar-min { font-size: 14px; color: #6b7280; min-width: 40px; }
   .position-bar-name {
-    font-size: 14px;
-    color: #4f46e5;
-    text-decoration: underline;
-    cursor: pointer;
+    font-size: 14px; color: #4f46e5; text-decoration: underline; cursor: pointer;
   }
 
   .field-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 24px;
+    background: #fff; border-radius: 20px; padding: 24px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.04);
   }
   .field-svg { width: 100%; height: 320px; }
 
   /* STATISTICS TAB */
   .stats-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px; flex-wrap: wrap; gap: 16px;
   }
-  .stats-title {
-    font-size: 28px;
-    font-weight: 800;
-  }
-  .stats-subtitle {
-    color: #6b7280;
-    font-size: 14px;
-    margin-top: 4px;
-  }
-  .stats-subtitle strong { color: #1a1a2e; }
-  .stats-actions {
-    display: flex;
-    gap: 12px;
-  }
+  .stats-title { font-size: 28px; font-weight: 800; }
+  .stats-actions { display: flex; gap: 12px; }
   .btn {
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px;
   }
-  .btn-primary {
-    background: #4f46e5;
-    color: #fff;
-  }
+  .btn-primary { background: #4f46e5; color: #fff; }
   .btn-primary:hover { background: #4338ca; transform: translateY(-1px); }
-  .btn-secondary {
-    background: #fff;
-    color: #1a1a2e;
-    border: 1.5px solid #e5e7eb;
-  }
+  .btn-secondary { background: #fff; color: #1a1a2e; border: 1.5px solid #e5e7eb; }
   .btn-secondary:hover { border-color: #4f46e5; color: #4f46e5; }
 
   .preset-selector { margin-bottom: 20px; }
   .preset-label {
-    font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 8px;
-    font-weight: 500;
+    font-size: 13px; color: #6b7280; margin-bottom: 8px; font-weight: 500;
   }
   .preset-select {
-    width: 100%;
-    max-width: 360px;
-    padding: 14px 20px;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    background: #fff;
-    cursor: pointer;
+    width: 100%; max-width: 360px; padding: 14px 20px;
+    border: 1.5px solid #e5e7eb; border-radius: 12px;
+    font-size: 15px; font-weight: 600; background: #fff; cursor: pointer;
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
+    background-repeat: no-repeat; background-position: right 16px center;
     transition: all 0.2s;
   }
   .preset-select:hover { border-color: #4f46e5; }
   .preset-select:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
 
-  /* Controls row */
   .controls-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
+    display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;
   }
-  .toggle-group {
-    display: flex;
-    background: #fff;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .toggle-btn {
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: #6b7280;
-    transition: all 0.2s;
-  }
-  .toggle-btn.active {
-    background: #4f46e5;
-    color: #fff;
-  }
-  .toggle-btn:not(.active):hover {
-    color: #1a1a2e;
-  }
-
   .switch-control {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #fff;
-    padding: 10px 20px;
-    border-radius: 12px;
-    border: 1.5px solid #e5e7eb;
+    display: flex; align-items: center; gap: 12px;
+    background: #fff; padding: 10px 20px;
+    border-radius: 12px; border: 1.5px solid #e5e7eb;
   }
   .switch-control-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #1a1a2e;
+    font-size: 14px; font-weight: 500; color: #1a1a2e;
   }
   .switch {
-    position: relative;
-    width: 48px;
-    height: 26px;
-    cursor: pointer;
+    position: relative; width: 48px; height: 26px; cursor: pointer;
   }
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
+  .switch input { opacity: 0; width: 0; height: 0; }
   .switch-slider {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: #d1d5db;
-    border-radius: 26px;
-    transition: 0.3s;
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: #d1d5db; border-radius: 26px; transition: 0.3s;
   }
   .switch-slider::before {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    left: 3px;
-    bottom: 3px;
-    background: #fff;
-    border-radius: 50%;
-    transition: 0.3s;
+    content: ''; position: absolute;
+    width: 20px; height: 20px; left: 3px; bottom: 3px;
+    background: #fff; border-radius: 50%; transition: 0.3s;
   }
-  .switch input:checked + .switch-slider {
-    background: #4f46e5;
-  }
-  .switch input:checked + .switch-slider::before {
-    transform: translateX(22px);
-  }
-
-  /* Metrics grid */
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-  .metric-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-  .metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  }
-  .metric-card.highlight {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-    color: #fff;
-  }
-  .metric-card.highlight .metric-value,
-  .metric-card.highlight .metric-label { color: #fff; }
-  .metric-card.highlight .metric-sub { color: rgba(255,255,255,0.7); }
-
-  .metric-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: #f3f4f6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    margin-bottom: 12px;
-  }
-  .metric-card.highlight .metric-icon {
-    background: rgba(255,255,255,0.2);
-  }
-  .metric-value {
-    font-size: 36px;
-    font-weight: 800;
-    color: #1a1a2e;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .metric-value sup {
-    font-size: 14px;
-    font-weight: 500;
-    opacity: 0.6;
-  }
-  .metric-label {
-    font-size: 13px;
-    color: #6b7280;
-    font-weight: 500;
-    margin-bottom: 8px;
-  }
-  .metric-sub {
-    font-size: 11px;
-    color: #9ca3af;
-  }
-
-  .circular-metric {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 20px;
-  }
-  .circular-metric .metric-value { font-size: 28px; margin-top: 12px; }
-  .circular-metric .metric-label { text-align: center; }
+  .switch input:checked + .switch-slider { background: #4f46e5; }
+  .switch input:checked + .switch-slider::before { transform: translateX(22px); }
 
   /* Radar view */
   .radar-view {
-    display: none;
-    background: #fff;
-    border-radius: 20px;
-    padding: 32px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    margin-bottom: 32px;
+    background: #fff; border-radius: 20px; padding: 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04); margin-bottom: 24px;
   }
-  .radar-view.active { display: block; }
   .radar-container {
-    max-width: 600px;
-    margin: 0 auto;
-    position: relative;
+    max-width: 600px; margin: 0 auto; position: relative;
+  }
+
+  /* Metrics table below radar */
+  .metrics-table-section {
+    background: #fff; border-radius: 20px; padding: 28px 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04); margin-bottom: 32px;
+  }
+  .metrics-table-title {
+    font-size: 20px; font-weight: 700; margin-bottom: 20px;
+  }
+  .metrics-table-player {
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px;
+  }
+  .metrics-table-player-name {
+    font-size: 18px; font-weight: 700;
+  }
+  .metrics-table-player-sub {
+    font-size: 14px; color: #6b7280;
+  }
+  .metrics-table-divider {
+    height: 3px; background: #4f46e5; border-radius: 2px; margin-bottom: 16px;
+  }
+  .metrics-table {
+    width: 100%; border-collapse: collapse;
+  }
+  .metrics-table thead th {
+    padding: 12px 16px; text-align: left; font-weight: 600;
+    color: #6b7280; font-size: 13px; border-bottom: 1px solid #e5e7eb;
+  }
+  .metrics-table tbody td {
+    padding: 14px 16px; border-bottom: 1px solid #f3f4f6;
+    font-size: 15px;
+  }
+  .metrics-table tbody tr:last-child td { border-bottom: none; }
+  .metrics-table tbody tr:hover { background: #f9fafb; }
+  .metrics-table .metric-name-cell {
+    font-weight: 500; color: #1a1a2e;
+  }
+  .metrics-table .metric-unit {
+    font-size: 12px; color: #9ca3af; font-weight: 400; margin-left: 6px;
+  }
+  .metrics-table .metric-better {
+    font-size: 12px; color: #9ca3af; font-weight: 400; margin-left: 6px;
+  }
+  .metrics-table .metric-value-cell {
+    font-weight: 600; color: #1a1a2e; text-align: right;
   }
 
   /* Modal */
   .modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0,0,0,0.5);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 20px;
+    display: none; align-items: center; justify-content: center;
+    z-index: 1000; padding: 20px;
   }
   .modal-overlay.active { display: flex; }
   .modal {
-    background: #fff;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 1400px;
-    max-height: 90vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    background: #fff; border-radius: 20px;
+    width: 100%; max-width: 1400px; max-height: 90vh;
+    overflow: hidden; display: flex; flex-direction: column;
     animation: modalIn 0.2s ease;
   }
   @keyframes modalIn {
@@ -593,287 +320,104 @@
     to { opacity: 1; transform: scale(1); }
   }
   .modal-header {
-    padding: 24px 28px;
-    border-bottom: 1px solid #f3f4f6;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    padding: 24px 28px; border-bottom: 1px solid #f3f4f6;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  .modal-title {
-    font-size: 22px;
-    font-weight: 700;
-  }
+  .modal-title { font-size: 22px; font-weight: 700; }
   .modal-close {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: #f3f4f6;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 36px; height: 36px; border-radius: 10px;
+    background: #f3f4f6; border: none; cursor: pointer; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
   }
   .modal-close:hover { background: #e5e7eb; }
-  .modal-body {
-    padding: 24px 28px;
-    overflow-y: auto;
-    flex: 1;
-  }
-
-  /* Table modal - like photo 2 */
-  .table-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-  .table-modal-title {
-    font-size: 32px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .table-modal-title .sub-tab {
-    font-size: 18px;
-    font-weight: 500;
-    color: #9ca3af;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .table-modal-title .sub-tab.active {
-    color: #1a1a2e;
-    font-weight: 600;
-  }
-  .table-modal-title .sub-tab.active::after {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 3px;
-    background: #10b981;
-    border-radius: 2px;
-    position: absolute;
-    bottom: -4px;
-  }
-  .sub-tab-wrap {
-    position: relative;
-    padding-bottom: 4px;
-  }
+  .modal-body { padding: 24px 28px; overflow-y: auto; flex: 1; }
 
   .table-filters {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    align-items: center;
+    display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
   }
   .filter-chip {
-    padding: 10px 16px;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    background: #fff;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #6b7280;
+    padding: 10px 16px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+    font-size: 14px; font-weight: 500; background: #fff; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; color: #6b7280;
   }
-  .filter-chip.active {
-    background: #1a1a2e;
-    color: #fff;
-    border-color: #1a1a2e;
-  }
-  .filter-chip .remove {
-    font-size: 14px;
-    opacity: 0.7;
-  }
-  .filter-chip-icon {
-    font-size: 16px;
-  }
+  .filter-chip.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+  .filter-chip .remove { font-size: 14px; opacity: 0.7; }
 
   .sub-tabs-row {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 20px;
+    display: flex; gap: 24px; margin-bottom: 20px;
     border-bottom: 2px solid #f3f4f6;
   }
   .sub-tab-item {
-    padding: 12px 0;
-    font-size: 15px;
-    font-weight: 500;
-    color: #9ca3af;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -2px;
+    padding: 12px 0; font-size: 15px; font-weight: 500;
+    color: #9ca3af; cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
   }
   .sub-tab-item.active {
-    color: #1a1a2e;
-    font-weight: 600;
-    border-bottom-color: #10b981;
+    color: #1a1a2e; font-weight: 600; border-bottom-color: #10b981;
   }
 
   .category-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    align-items: center;
+    display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
   }
   .category-tab {
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    background: #fff;
-    border: 1.5px solid #e5e7eb;
-    cursor: pointer;
-    transition: all 0.2s;
+    padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;
+    background: #fff; border: 1.5px solid #e5e7eb; cursor: pointer; transition: all 0.2s;
   }
   .category-tab:hover { border-color: #4f46e5; color: #4f46e5; }
-  .category-tab.active {
-    background: #1a1a2e;
-    color: #fff;
-    border-color: #1a1a2e;
-  }
+  .category-tab.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
 
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .data-table thead th {
-    background: #f9fafb;
-    padding: 12px 10px;
-    text-align: left;
-    font-weight: 600;
-    color: #6b7280;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid #e5e7eb;
-    white-space: nowrap;
+    background: #f9fafb; padding: 12px 10px; text-align: left;
+    font-weight: 600; color: #6b7280; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid #e5e7eb; white-space: nowrap;
   }
   .data-table thead th.section-header {
-    background: #f3f4f6;
-    font-size: 12px;
-    color: #1a1a2e;
-    text-align: center;
-    border-bottom: 2px solid #e5e7eb;
+    background: #f3f4f6; font-size: 12px; color: #1a1a2e;
+    text-align: center; border-bottom: 2px solid #e5e7eb;
   }
   .data-table tbody td {
-    padding: 12px 10px;
-    border-bottom: 1px solid #f3f4f6;
-    white-space: nowrap;
+    padding: 12px 10px; border-bottom: 1px solid #f3f4f6; white-space: nowrap;
   }
   .data-table tbody tr:hover { background: #f9fafb; }
-  .data-table .player-cell {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .data-table .player-cell { display: flex; align-items: center; gap: 8px; }
   .player-avatar-small {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #4f46e5;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 700;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #4f46e5; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
   }
-  .player-name-link {
-    color: #4f46e5;
-    font-weight: 600;
-    cursor: pointer;
-  }
+  .player-name-link { color: #4f46e5; font-weight: 600; cursor: pointer; }
   .player-name-link:hover { text-decoration: underline; }
-  .table-row-highlight {
-    background: #eef2ff !important;
-  }
+  .table-row-highlight { background: #eef2ff !important; }
 
-  /* Compare modal */
-  .compare-layout {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 24px;
-  }
+  .compare-layout { display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
   .compare-table-wrap { overflow-x: auto; }
-  .compare-sidebar {
-    background: #f9fafb;
-    border-radius: 16px;
-    padding: 20px;
-  }
+  .compare-sidebar { background: #f9fafb; border-radius: 16px; padding: 20px; }
   .compare-sidebar-title {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    font-size: 16px; font-weight: 700; margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between;
   }
   .compare-slot {
-    background: #fff;
-    border: 2px dashed #d1d5db;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
+    background: #fff; border: 2px dashed #d1d5db; border-radius: 12px;
+    padding: 16px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: all 0.2s;
   }
   .compare-slot:hover { border-color: #4f46e5; }
-  .compare-slot.filled {
-    border-style: solid;
-    border-color: #4f46e5;
-    background: #fff;
-  }
+  .compare-slot.filled { border-style: solid; border-color: #4f46e5; background: #fff; }
   .compare-slot-num {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #f3f4f6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 700;
-    color: #6b7280;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #f3f4f6; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #6b7280;
   }
-  .compare-slot.filled .compare-slot-num {
-    background: #4f46e5;
-    color: #fff;
-  }
-  .compare-slot-text {
-    font-size: 13px;
-    color: #6b7280;
-  }
-  .compare-slot.filled .compare-slot-text {
-    color: #1a1a2e;
-    font-weight: 600;
-  }
-  .compare-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 16px;
-  }
+  .compare-slot.filled .compare-slot-num { background: #4f46e5; color: #fff; }
+  .compare-slot-text { font-size: 13px; color: #6b7280; }
+  .compare-slot.filled .compare-slot-text { color: #1a1a2e; font-weight: 600; }
+  .compare-actions { display: flex; gap: 8px; margin-top: 16px; }
   .compare-actions .btn { flex: 1; justify-content: center; font-size: 13px; padding: 10px; }
-  .btn-disabled {
-    background: #f3f4f6;
-    color: #9ca3af;
-    cursor: not-allowed;
-  }
+  .btn-disabled { background: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
 
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -881,11 +425,9 @@
   ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 
   @media (max-width: 1200px) {
-    .metrics-grid { grid-template-columns: repeat(3, 1fr); }
     .profile-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 768px) {
-    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
     .content { padding: 20px; }
     .compare-layout { grid-template-columns: 1fr; }
   }
@@ -918,9 +460,7 @@
       <div class="profile-grid">
         <div class="photo-card">
           <div class="jersey-number">25</div>
-          <div class="player-photo">
-            <div class="player-photo-placeholder"></div>
-          </div>
+          <div class="player-photo"><div class="player-photo-placeholder"></div></div>
         </div>
         <div class="info-card">
           <div class="team-badge">
@@ -932,34 +472,13 @@
             </div>
           </div>
           <div class="stats-row">
-            <div class="stat-big">
-              <div class="stat-big-value">15<sup>лет</sup></div>
-              <div class="stat-big-sub">23.05.11</div>
-            </div>
-            <div class="stat-big">
-              <div class="stat-big-value">183</div>
-              <div class="stat-big-label">Рост</div>
-            </div>
-            <div class="stat-big">
-              <div class="stat-big-value">72</div>
-              <div class="stat-big-label">Вес</div>
-            </div>
+            <div class="stat-big"><div class="stat-big-value">15<sup>лет</sup></div><div class="stat-big-sub">23.05.11</div></div>
+            <div class="stat-big"><div class="stat-big-value">183</div><div class="stat-big-label">Рост</div></div>
+            <div class="stat-big"><div class="stat-big-value">72</div><div class="stat-big-label">Вес</div></div>
           </div>
           <div class="meta-row">
-            <div class="meta-item">
-              <div class="meta-icon"></div>
-              <div>
-                <div class="meta-label">Амплуа</div>
-                <div class="meta-value">Вратарь</div>
-              </div>
-            </div>
-            <div class="meta-item">
-              <div class="meta-icon" style="background: #f3f4f6; font-size: 24px; color: #9ca3af;">+</div>
-              <div>
-                <div class="meta-label">Рабочая нога</div>
-                <div class="meta-value" style="color: #9ca3af;">—</div>
-              </div>
-            </div>
+            <div class="meta-item"><div class="meta-icon"></div><div><div class="meta-label">Амплуа</div><div class="meta-value">Вратарь</div></div></div>
+            <div class="meta-item"><div class="meta-icon" style="background: #f3f4f6; font-size: 24px; color: #9ca3af;">+</div><div><div class="meta-label">Рабочая нога</div><div class="meta-value" style="color: #9ca3af;">—</div></div></div>
           </div>
           <div class="stats-summary">
             <div class="stats-summary-title">Статистика</div>
@@ -991,22 +510,15 @@
     <!-- Statistics Tab -->
     <div class="tab-content active" id="tab-stats">
       <div class="stats-header">
-        <div>
-          <div class="stats-title">Статистика</div>
-          <div class="stats-subtitle">Архетип: <strong id="currentArchetype">Вратарь</strong></div>
-        </div>
+        <div class="stats-title">Статистика</div>
         <div class="stats-actions">
-          <button class="btn btn-secondary" onclick="openModal('tableModal')">
-            📊 Посмотреть всю статистику
-          </button>
-          <button class="btn btn-primary" onclick="openModal('compareModal')">
-            ⚖️ Сравнить
-          </button>
+          <button class="btn btn-secondary" onclick="openModal('tableModal')">📊 Посмотреть всю статистику</button>
+          <button class="btn btn-primary" onclick="openModal('compareModal')">⚖️ Сравнить</button>
         </div>
       </div>
 
       <div class="preset-selector">
-        <div class="preset-label">Выберите модель для отображения метрик</div>
+        <div class="preset-label">Выберите набор для отображения метрик</div>
         <select class="preset-select" id="presetSelect" onchange="changePreset()">
           <option value="standard">Стандартный</option>
           <option value="goalkeeper" selected>Вратарь</option>
@@ -1016,31 +528,45 @@
           <option value="centralMid">Центральный полузащитник</option>
           <option value="winger">Крайний нападающий</option>
           <option value="striker">Центральный нападающий</option>
+          <option value="fitness">Фитнес-тесты</option>
+          <option value="trackers">Трекеры. Матчи</option>
         </select>
       </div>
 
       <div class="controls-row">
-        <div class="toggle-group">
-          <button class="toggle-btn active" id="viewCards" onclick="setView('cards')">Карточки</button>
-          <button class="toggle-btn" id="viewRadar" onclick="setView('radar')">Радар</button>
-        </div>
         <div class="switch-control">
           <span class="switch-control-label">Среднее за 90 минут</span>
           <label class="switch">
-            <input type="checkbox" id="per90Toggle" onchange="renderMetrics()">
+            <input type="checkbox" id="per90Toggle" checked onchange="renderAll()">
             <span class="switch-slider"></span>
           </label>
         </div>
       </div>
 
-      <!-- Cards view -->
-      <div class="metrics-grid" id="metricsGrid"></div>
-
-      <!-- Radar view -->
-      <div class="radar-view" id="radarView">
+      <div class="radar-view">
         <div class="radar-container">
           <canvas id="radarChart"></canvas>
         </div>
+      </div>
+
+      <div class="metrics-table-section">
+        <div class="metrics-table-title">Значения по метрикам</div>
+        <div class="metrics-table-player">
+          <div>
+            <div class="metrics-table-player-name" id="metricsTablePlayerName">Самуков Кирилл</div>
+            <div class="metrics-table-player-sub" id="metricsTablePlayerSub">Академия КФФ · ВР</div>
+          </div>
+        </div>
+        <div class="metrics-table-divider"></div>
+        <table class="metrics-table">
+          <thead>
+            <tr>
+              <th>Метрика</th>
+              <th style="text-align: right;" id="metricsTableValueHeader">Значение</th>
+            </tr>
+          </thead>
+          <tbody id="metricsTableBody"></tbody>
+        </table>
       </div>
     </div>
 
@@ -1061,33 +587,23 @@
       <button class="modal-close" onclick="closeModal('tableModal')"></button>
     </div>
     <div class="modal-body">
-      <div class="table-modal-title" style="margin-bottom: 24px;">
-        <span>Статистика</span>
-        <div class="sub-tab-wrap">
-          <span class="sub-tab active">📋 Таблицы</span>
-        </div>
-        <span class="sub-tab">📊 Сравнение</span>
-      </div>
-
       <div class="table-filters">
-        <div class="filter-chip">Год рождения ▾</div>
+        <div class="filter-chip">Год рождения </div>
         <div class="filter-chip">Амплуа ▾</div>
         <div class="filter-chip">Позиция ▾</div>
         <div class="filter-chip">Турнир ▾</div>
         <div class="filter-chip">Команда ▾</div>
-        <div class="filter-chip" style="margin-left: auto;">📅</div>
+        <div class="filter-chip" style="margin-left: auto;"></div>
         <div class="filter-chip">⚙️ <span style="background: #4f46e5; color: #fff; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; margin-left: -4px;">2</span></div>
         <div class="filter-chip active">Применить</div>
         <div class="filter-chip">🖨</div>
       </div>
-
       <div class="sub-tabs-row">
         <div class="sub-tab-item active">Статистика</div>
         <div class="sub-tab-item">Фитнес</div>
         <div class="sub-tab-item">Оценка</div>
         <div class="sub-tab-item">Модели</div>
       </div>
-
       <div class="category-tabs">
         <div class="category-tab active">Атака (М+)</div>
         <div class="category-tab">Защита (М−)</div>
@@ -1099,20 +615,13 @@
         <div class="category-tab">Стандарты</div>
         <div class="category-tab">Потери</div>
         <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
-          <label class="switch" style="width: 40px; height: 22px;">
-            <input type="checkbox">
-            <span class="switch-slider"></span>
-          </label>
+          <label class="switch" style="width: 40px; height: 22px;"><input type="checkbox"><span class="switch-slider"></span></label>
           <span style="font-size: 13px; color: #6b7280; font-weight: 500;">Среднее за 90 минут</span>
         </div>
         <div style="margin-left: 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6b7280;">
-          <span style="cursor: pointer;">‹</span>
-          <span style="font-weight: 600;">1</span>
-          <span>/ 2</span>
-          <span style="cursor: pointer;">›</span>
+          <span style="cursor: pointer;">‹</span><span style="font-weight: 600;">1</span><span>/ 2</span><span style="cursor: pointer;">›</span>
         </div>
       </div>
-
       <div style="overflow-x: auto;">
         <table class="data-table">
           <thead>
@@ -1123,54 +632,23 @@
               <th colspan="4" class="section-header">ОБОСТРЕНИЕ</th>
             </tr>
             <tr>
-              <th>#</th>
-              <th>Игрок</th>
-              <th>А</th>
-              <th>ДП</th>
-              <th>Архетип</th>
-              <th>г.р.</th>
-              <th>Рост</th>
-              <th>Вес</th>
-              <th>Матчи</th>
-              <th>Мин</th>
-              <th>Г</th>
-              <th>УВ</th>
-              <th>УВС</th>
-              <th>УВС%</th>
-              <th>Угл</th>
-              <th>УГст</th>
-              <th>УГст%</th>
-              <th>Блок</th>
-              <th>xG</th>
-              <th>ГП</th>
-              <th>ПгП</th>
-              <th>ППгП</th>
+              <th>#</th><th>Игрок</th><th>А</th><th>ДП</th>
+              <th>Архетип</th><th>г.р.</th><th>Рост</th><th>Вес</th>
+              <th>Матчи</th><th>Мин</th><th>Г</th><th>УВ</th>
+              <th>УВС</th><th>УВС%</th><th>Угл</th><th>УГст</th>
+              <th>УГст%</th><th>Блок</th><th>xG</th><th>ГП</th>
+              <th>ПгП</th><th>ППгП</th>
             </tr>
           </thead>
           <tbody>
             <tr class="table-row-highlight">
               <td>1</td>
               <td><div class="player-cell"><div class="player-avatar-small" style="background: #dc2626;">КС</div><span class="player-name-link">Самуков Кирилл</span></div></td>
-              <td>ВР</td>
-              <td>ВР</td>
-              <td>Вр Либ</td>
-              <td>2011</td>
-              <td>183</td>
-              <td>72</td>
-              <td>18</td>
-              <td>1282</td>
-              <td>0</td>
-              <td>0</td>
-              <td>0</td>
-              <td>—</td>
-              <td>0</td>
-              <td>0</td>
-              <td>—</td>
-              <td>0</td>
-              <td>0</td>
-              <td>0</td>
-              <td>0</td>
-              <td>0</td>
+              <td>ВР</td><td>ВР</td><td>Вр Либ</td><td>2011</td>
+              <td>183</td><td>72</td><td>18</td><td>1282</td>
+              <td>0</td><td>0</td><td>0</td><td>—</td>
+              <td>0</td><td>0</td><td>—</td><td>0</td>
+              <td>0</td><td>0</td><td>0</td><td>0</td>
             </tr>
           </tbody>
         </table>
@@ -1202,89 +680,22 @@
       <div class="compare-layout">
         <div class="compare-table-wrap">
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Игрок</th>
-                <th>А</th>
-                <th>ДП</th>
-                <th>Архетип</th>
-                <th>г.р.</th>
-                <th>Рост</th>
-                <th>Вес</th>
-                <th>Матчи</th>
-                <th>Мин</th>
-              </tr>
-            </thead>
+            <thead><tr><th>#</th><th>Игрок</th><th>А</th><th>ДП</th><th>Архетип</th><th>г.р.</th><th>Рост</th><th>Вес</th><th>Матчи</th><th>Мин</th></tr></thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td><div class="player-cell"><div class="player-avatar-small">БФ</div><span class="player-name-link">Бейсенов Фархат</span></div></td>
-                <td>Н</td>
-                <td>ПФД</td>
-                <td>Нап Штр</td>
-                <td>1999</td>
-                <td>183</td>
-                <td>63</td>
-                <td>58</td>
-                <td>4680</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td><div class="player-cell"><div class="player-avatar-small">НУ</div><span class="player-name-link">Нурланов Улан</span></div></td>
-                <td>ВР</td>
-                <td>ВР</td>
-                <td>Вр Либ</td>
-                <td>2004</td>
-                <td>189</td>
-                <td>70</td>
-                <td>55</td>
-                <td>4620</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td><div class="player-cell"><div class="player-avatar-small">СС</div><span class="player-name-link">Смагулов Сабит</span></div></td>
-                <td>Н</td>
-                <td>ПФД</td>
-                <td>Нап Прес</td>
-                <td>2008</td>
-                <td>170</td>
-                <td>60</td>
-                <td>58</td>
-                <td>4640</td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td><div class="player-cell"><div class="player-avatar-small">КЧ</div><span class="player-name-link">Кайратов Чингиз</span></div></td>
-                <td>ПЗ</td>
-                <td>ЦП</td>
-                <td>В2В ОП</td>
-                <td>2009</td>
-                <td>177</td>
-                <td>60</td>
-                <td>57</td>
-                <td>4590</td>
-              </tr>
+              <tr><td>1</td><td><div class="player-cell"><div class="player-avatar-small">БФ</div><span class="player-name-link">Бейсенов Фархат</span></div></td><td>Н</td><td>ПФД</td><td>Нап Штр</td><td>1999</td><td>183</td><td>63</td><td>58</td><td>4680</td></tr>
+              <tr><td>2</td><td><div class="player-cell"><div class="player-avatar-small">НУ</div><span class="player-name-link">Нурланов Улан</span></div></td><td>ВР</td><td>ВР</td><td>Вр Либ</td><td>2004</td><td>189</td><td>70</td><td>55</td><td>4620</td></tr>
+              <tr><td>3</td><td><div class="player-cell"><div class="player-avatar-small">СС</div><span class="player-name-link">Смагулов Сабит</span></div></td><td>Н</td><td>ПФД</td><td>Нап Прес</td><td>2008</td><td>170</td><td>60</td><td>58</td><td>4640</td></tr>
+              <tr><td>4</td><td><div class="player-cell"><div class="player-avatar-small">КЧ</div><span class="player-name-link">Кайратов Чингиз</span></div></td><td>ПЗ</td><td>ЦП</td><td>В2В ОП</td><td>2009</td><td>177</td><td>60</td><td>57</td><td>4590</td></tr>
             </tbody>
           </table>
         </div>
         <div class="compare-sidebar">
-          <div class="compare-sidebar-title">
-            Набор сравнения <span style="color: #9ca3af; font-weight: 400; font-size: 14px;">1 из 4</span>
-          </div>
-          <div class="compare-slot filled">
-            <div class="compare-slot-num">1</div>
-            <div>
-              <div class="compare-slot-text" style="margin-bottom: 2px;">Самуков Кирилл</div>
-              <div style="font-size: 11px; color: #9ca3af;">Вратарь • 18 матчей</div>
-            </div>
-          </div>
+          <div class="compare-sidebar-title">Набор сравнения <span style="color: #9ca3af; font-weight: 400; font-size: 14px;">1 из 4</span></div>
+          <div class="compare-slot filled"><div class="compare-slot-num">1</div><div><div class="compare-slot-text" style="margin-bottom: 2px;">Самуков Кирилл</div><div style="font-size: 11px; color: #9ca3af;">Вратарь • 18 матчей</div></div></div>
           <div class="compare-slot"><div class="compare-slot-num">2</div><div class="compare-slot-text">+ Добавить игрока или группу</div></div>
           <div class="compare-slot"><div class="compare-slot-num">3</div><div class="compare-slot-text">+ Добавить игрока или группу</div></div>
           <div class="compare-slot"><div class="compare-slot-num">4</div><div class="compare-slot-text">+ Добавить игрока или группу</div></div>
-          <div style="font-size: 12px; color: #9ca3af; margin-top: 12px; line-height: 1.5;">
-            Отметьте игроков в таблице — их можно добавить по отдельности или свернуть в группу.
-          </div>
+          <div style="font-size: 12px; color: #9ca3af; margin-top: 12px; line-height: 1.5;">Отметьте игроков в таблице — их можно добавить по отдельности или свернуть в группу.</div>
           <div class="compare-actions">
             <button class="btn btn-primary" style="font-size: 13px;">Сравнить</button>
             <button class="btn btn-secondary" style="font-size: 13px;">🗑 Очистить набор</button>
@@ -1302,7 +713,7 @@ const presets = {
   standard: {
     name: 'Стандартный',
     metrics: [
-      { key: 'minutes', label: 'Минуты', value: 1282, unit: 'мин', direction: 'more', icon: '⏱' },
+      { key: 'minutes', label: 'Минуты', value: 1282, unit: 'мин', direction: 'more', icon: '⏱', sumLabel: 'сумма' },
       { key: 'goals', label: 'Голы', value: 9, unit: '', direction: 'more', icon: '⚽' },
       { key: 'shots', label: 'Удары по воротам', value: 50, unit: '', direction: 'more', icon: '🎯' },
       { key: 'assists', label: 'Голевые передачи', value: 9, unit: '', direction: 'more', icon: '' },
@@ -1312,18 +723,18 @@ const presets = {
       { key: 'recoveries', label: 'Возвраты мяча', value: 156, unit: '', direction: 'more', icon: '🔄' },
       { key: 'duels', label: 'Всего единоборств', value: 278, unit: '', direction: 'more', icon: '⚔️' },
       { key: 'aerialDuels', label: 'Верховые единоборства', value: 45, unit: '', direction: 'more', icon: '🆙' },
-      { key: 'fouls', label: 'Фолы', value: 18, unit: '', direction: 'less', icon: '⚠️' },
+      { key: 'fouls', label: 'Нарушения правил игроком', value: 18, unit: '', direction: 'less', icon: '⚠️' },
       { key: 'losses', label: 'Потери', value: 92, unit: '', direction: 'less', icon: '📉' },
     ]
   },
   goalkeeper: {
     name: 'Вратарь',
     metrics: [
-      { key: 'shortPasses', label: 'Короткие передачи', value: 142, unit: '', direction: 'more', icon: '', highlight: true },
+      { key: 'shortPasses', label: 'Короткие передачи', value: 142, unit: '', direction: 'more', icon: '' },
       { key: 'mediumPasses', label: 'Средние передачи', value: 98, unit: '', direction: 'more', icon: '📤' },
       { key: 'longPasses', label: 'Длинные передачи', value: 67, unit: '', direction: 'more', icon: '' },
       { key: 'progressivePasses', label: 'Продвигающие передачи', value: 45, unit: '', direction: 'more', icon: '➡️' },
-      { key: 'saves', label: 'Сейвы', value: 58, unit: '', direction: 'more', icon: '🧤', highlight: true, circular: true, percent: 72 },
+      { key: 'saves', label: 'Сейвы', value: 58, unit: '', direction: 'more', icon: '🧤' },
       { key: 'conceded', label: 'Пропущенные голы', value: 14, unit: '', direction: 'less', icon: '⚽' },
       { key: 'xCG', label: 'Ожидаемые пропущенные', value: 18.4, unit: '', direction: 'less', icon: '📊' },
       { key: 'exits', label: 'Выходы из ворот', value: 23, unit: '', direction: 'more', icon: '🏃' },
@@ -1332,10 +743,10 @@ const presets = {
   centerBack: {
     name: 'Центральный защитник',
     metrics: [
-      { key: 'progressivePasses', label: 'Продвигающие передачи', value: 76, unit: '', direction: 'more', icon: '➡️', highlight: true },
+      { key: 'progressivePasses', label: 'Продвигающие передачи', value: 76, unit: '', direction: 'more', icon: '➡️' },
       { key: 'ballRuns', label: 'Забеги с мячом', value: 34, unit: '', direction: 'more', icon: '🏃' },
       { key: 'totalPasses', label: 'Всего передач', value: 892, unit: '', direction: 'more', icon: '📤' },
-      { key: 'tackles', label: 'Отборы', value: 67, unit: '', direction: 'more', icon: '🛡️', highlight: true },
+      { key: 'tackles', label: 'Отборы', value: 67, unit: '', direction: 'more', icon: '🛡️' },
       { key: 'duels', label: 'Единоборства', value: 198, unit: '', direction: 'more', icon: '⚔️' },
       { key: 'aerialDuels', label: 'Верховые единоборства', value: 89, unit: '', direction: 'more', icon: '🆙' },
       { key: 'interceptions', label: 'Перехваты', value: 54, unit: '', direction: 'more', icon: '✋' },
@@ -1347,12 +758,12 @@ const presets = {
   fullBack: {
     name: 'Крайний защитник',
     metrics: [
-      { key: 'progressivePasses', label: 'Продвигающие передачи', value: 68, unit: '', direction: 'more', icon: '➡️', highlight: true },
-      { key: 'ballRuns', label: 'Забеги с мячом', value: 52, unit: '', direction: 'more', icon: '🏃' },
+      { key: 'progressivePasses', label: 'Продвигающие передачи', value: 68, unit: '', direction: 'more', icon: '➡️' },
+      { key: 'ballRuns', label: 'Забеги с мячом', value: 52, unit: '', direction: 'more', icon: '' },
       { key: 'totalPasses', label: 'Всего передач', value: 734, unit: '', direction: 'more', icon: '📤' },
-      { key: 'crosses', label: 'Навесы', value: 47, unit: '', direction: 'more', icon: '✈️', highlight: true },
+      { key: 'crosses', label: 'Навесы', value: 47, unit: '', direction: 'more', icon: '✈️' },
       { key: 'tackles', label: 'Отборы', value: 58, unit: '', direction: 'more', icon: '🛡️' },
-      { key: 'interceptions', label: 'Перехваты', value: 46, unit: '', direction: 'more', icon: '✋' },
+      { key: 'interceptions', label: 'Перехваты', value: 46, unit: '', direction: 'more', icon: '' },
       { key: 'looseBalls', label: 'Подборы мяча', value: 38, unit: '', direction: 'more', icon: '🔄' },
       { key: 'recoveries', label: 'Возвраты мяча', value: 112, unit: '', direction: 'more', icon: '🔄' },
       { key: 'duels', label: 'Единоборства', value: 176, unit: '', direction: 'more', icon: '⚔️' },
@@ -1362,12 +773,12 @@ const presets = {
   defensiveMid: {
     name: 'Опорный полузащитник',
     metrics: [
-      { key: 'progressivePasses', label: 'Продвигающие передачи', value: 94, unit: '', direction: 'more', icon: '➡️', highlight: true },
+      { key: 'progressivePasses', label: 'Продвигающие передачи', value: 94, unit: '', direction: 'more', icon: '➡️' },
       { key: 'ballRuns', label: 'Забеги с мячом', value: 41, unit: '', direction: 'more', icon: '🏃' },
       { key: 'totalPasses', label: 'Всего передач', value: 1024, unit: '', direction: 'more', icon: '📤' },
       { key: 'keyPasses', label: 'Ключевые передачи', value: 28, unit: '', direction: 'more', icon: '🔑' },
       { key: 'shots', label: 'Удары по воротам', value: 22, unit: '', direction: 'more', icon: '🎯' },
-      { key: 'tackles', label: 'Отборы', value: 72, unit: '', direction: 'more', icon: '🛡️', highlight: true },
+      { key: 'tackles', label: 'Отборы', value: 72, unit: '', direction: 'more', icon: '🛡️' },
       { key: 'duels', label: 'Единоборства', value: 214, unit: '', direction: 'more', icon: '⚔️' },
       { key: 'interceptions', label: 'Перехваты', value: 61, unit: '', direction: 'more', icon: '✋' },
       { key: 'looseBalls', label: 'Подборы мяча', value: 48, unit: '', direction: 'more', icon: '🔄' },
@@ -1377,11 +788,11 @@ const presets = {
   centralMid: {
     name: 'Центральный полузащитник',
     metrics: [
-      { key: 'progressivePasses', label: 'Продвигающие передачи', value: 112, unit: '', direction: 'more', icon: '➡️', highlight: true },
+      { key: 'progressivePasses', label: 'Продвигающие передачи', value: 112, unit: '', direction: 'more', icon: '➡️' },
       { key: 'ballRuns', label: 'Забеги с мячом', value: 58, unit: '', direction: 'more', icon: '🏃' },
       { key: 'totalPasses', label: 'Всего передач', value: 1186, unit: '', direction: 'more', icon: '📤' },
       { key: 'keyPasses', label: 'Ключевые передачи', value: 34, unit: '', direction: 'more', icon: '🔑' },
-      { key: 'shots', label: 'Удары по воротам', value: 31, unit: '', direction: 'more', icon: '🎯' },
+      { key: 'shots', label: 'Удары по воротам', value: 31, unit: '', direction: 'more', icon: '' },
       { key: 'tackles', label: 'Отборы', value: 64, unit: '', direction: 'more', icon: '🛡️' },
       { key: 'duels', label: 'Единоборства', value: 228, unit: '', direction: 'more', icon: '⚔️' },
       { key: 'interceptions', label: 'Перехваты', value: 52, unit: '', direction: 'more', icon: '✋' },
@@ -1392,10 +803,10 @@ const presets = {
   winger: {
     name: 'Крайний нападающий',
     metrics: [
-      { key: 'assists', label: 'Голевые передачи', value: 11, unit: '', direction: 'more', icon: '🎯', highlight: true },
+      { key: 'assists', label: 'Голевые передачи', value: 11, unit: '', direction: 'more', icon: '🎯' },
       { key: 'crosses', label: 'Навесы', value: 56, unit: '', direction: 'more', icon: '✈️' },
       { key: 'keyPasses', label: 'Ключевые передачи', value: 42, unit: '', direction: 'more', icon: '🔑' },
-      { key: 'dribblesPacking', label: 'Отрезающий дриблинг', value: 28, unit: '', direction: 'more', icon: '💨', highlight: true },
+      { key: 'dribblesPacking', label: 'Отрезающий дриблинг', value: 28, unit: '', direction: 'more', icon: '💨' },
       { key: 'goals', label: 'Голы', value: 12, unit: '', direction: 'more', icon: '⚽' },
       { key: 'shots', label: 'Удары по воротам', value: 64, unit: '', direction: 'more', icon: '' },
       { key: 'foulsSuffered', label: 'Фолы на игроке', value: 34, unit: '', direction: 'more', icon: '⚠️' },
@@ -1407,33 +818,47 @@ const presets = {
   striker: {
     name: 'Центральный нападающий',
     metrics: [
-      { key: 'goals', label: 'Голы', value: 14, unit: '', direction: 'more', icon: '⚽', highlight: true },
+      { key: 'goals', label: 'Голы', value: 14, unit: '', direction: 'more', icon: '⚽' },
       { key: 'shots', label: 'Удары по воротам', value: 78, unit: '', direction: 'more', icon: '🎯' },
       { key: 'assists', label: 'Голевые передачи', value: 7, unit: '', direction: 'more', icon: '🎯' },
-      { key: 'xG', label: 'Ожидаемые голы', value: 12.8, unit: '', direction: 'more', icon: '', highlight: true },
+      { key: 'xG', label: 'Ожидаемые голы', value: 12.8, unit: '', direction: 'more', icon: '' },
       { key: 'receivedPasses', label: 'Полученные передачи', value: 186, unit: '', direction: 'more', icon: '📥' },
-      { key: 'keyPasses', label: 'Ключевые передачи', value: 24, unit: '', direction: 'more', icon: '🔑' },
+      { key: 'keyPasses', label: 'Ключевые передачи', value: 24, unit: '', direction: 'more', icon: '' },
       { key: 'dribblesPacking', label: 'Отрезающий дриблинг', value: 22, unit: '', direction: 'more', icon: '💨' },
-      { key: 'duels', label: 'Единоборства', value: 268, unit: '', direction: 'more', icon: '⚔️' },
+      { key: 'duels', label: 'Единоборства', value: 268, unit: '', direction: 'more', icon: '️' },
       { key: 'aerialDuels', label: 'Верховые единоборства', value: 94, unit: '', direction: 'more', icon: '🆙' },
       { key: 'interceptions', label: 'Перехваты', value: 18, unit: '', direction: 'more', icon: '✋' },
+    ]
+  },
+  fitness: {
+    name: 'Фитнес-тесты',
+    metrics: [
+      { key: 'vo2max', label: 'VO₂ макс', value: 52.4, unit: 'мл/кг/мин', direction: 'more', icon: '🫁' },
+      { key: 'sprint30', label: 'Спринт 30м', value: 4.12, unit: 'сек', direction: 'less', icon: '⚡' },
+      { key: 'jumpHeight', label: 'Высота прыжка', value: 48, unit: 'см', direction: 'more', icon: '🦘' },
+      { key: 'agility', label: 'Челночный бег', value: 9.8, unit: 'сек', direction: 'less', icon: '🏃' },
+      { key: 'flexibility', label: 'Гибкость', value: 22, unit: 'см', direction: 'more', icon: '🤸' },
+      { key: 'bodyFat', label: 'Жировая масса', value: 8.2, unit: '%', direction: 'less', icon: '⚖️' },
+      { key: 'muscleMass', label: 'Мышечная масса', value: 64.5, unit: 'кг', direction: 'more', icon: '💪' },
+      { key: 'hrRest', label: 'Пульс покоя', value: 58, unit: 'уд/мин', direction: 'less', icon: '❤️' },
+    ]
+  },
+  trackers: {
+    name: 'Трекеры. Матчи',
+    metrics: [
+      { key: 'distanceTotal', label: 'Дистанция общая', value: 8.4, unit: 'км', direction: 'more', icon: '' },
+      { key: 'distanceHighSpeed', label: 'Дистанция высокой скорости', value: 1.2, unit: 'км', direction: 'more', icon: '🏃' },
+      { key: 'sprints', label: 'Спринты', value: 12, unit: '', direction: 'more', icon: '⚡' },
+      { key: 'accelerations', label: 'Ускорения', value: 34, unit: '', direction: 'more', icon: '🚀' },
+      { key: 'decelerations', label: 'Замедления', value: 28, unit: '', direction: 'more', icon: '🛑' },
+      { key: 'topSpeed', label: 'Максимальная скорость', value: 28.6, unit: 'км/ч', direction: 'more', icon: '💨' },
+      { key: 'heartRateAvg', label: 'Пульс средний', value: 142, unit: 'уд/мин', direction: 'more', icon: '❤️' },
+      { key: 'heartRateMax', label: 'Пульс максимальный', value: 178, unit: 'уд/мин', direction: 'more', icon: '❤️‍🔥' },
     ]
   }
 };
 
-let currentView = 'cards';
 let radarChartInstance = null;
-
-function setView(view) {
-  currentView = view;
-  document.getElementById('viewCards').classList.toggle('active', view === 'cards');
-  document.getElementById('viewRadar').classList.toggle('active', view === 'radar');
-  document.getElementById('metricsGrid').style.display = view === 'cards' ? 'grid' : 'none';
-  document.getElementById('radarView').classList.toggle('active', view === 'radar');
-  if (view === 'radar') {
-    renderRadar();
-  }
-}
 
 function getDisplayValue(metric) {
   const per90 = document.getElementById('per90Toggle').checked;
@@ -1443,57 +868,12 @@ function getDisplayValue(metric) {
   return metric.value;
 }
 
-function renderMetrics() {
-  const preset = document.getElementById('presetSelect').value;
-  const data = presets[preset];
-  const grid = document.getElementById('metricsGrid');
-  const per90 = document.getElementById('per90Toggle').checked;
-
-  grid.innerHTML = data.metrics.map(m => {
-    const displayVal = getDisplayValue(m);
-    const unitSuffix = per90 && m.key !== 'minutes' ? '/90 мин' : (m.unit || '');
-    
-    if (m.circular) {
-      const percent = m.percent || 72;
-      const circumference = 2 * Math.PI * 40;
-      const offset = circumference - (percent / 100) * circumference;
-      return `
-        <div class="metric-card circular-metric ${m.highlight ? 'highlight' : ''}">
-          <svg width="100" height="100" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="${m.highlight ? 'rgba(255,255,255,0.2)' : '#e5e7eb'}" stroke-width="8"/>
-            <circle cx="50" cy="50" r="40" fill="none" stroke="${m.highlight ? '#fff' : '#4f46e5'}" stroke-width="8" 
-              stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" 
-              stroke-linecap="round" transform="rotate(-90 50 50)"/>
-          </svg>
-          <div class="metric-value">${displayVal}${unitSuffix ? '<sup>' + unitSuffix + '</sup>' : ''}</div>
-          <div class="metric-label">${m.label}</div>
-        </div>
-      `;
-    }
-    
-    return `
-      <div class="metric-card ${m.highlight ? 'highlight' : ''}">
-        <div class="metric-icon">${m.icon}</div>
-        <div class="metric-value">${displayVal}${unitSuffix ? '<sup>' + unitSuffix + '</sup>' : ''}</div>
-        <div class="metric-label">${m.label}</div>
-      </div>
-    `;
-  }).join('');
-
-  if (currentView === 'radar') {
-    renderRadar();
-  }
-}
-
 function renderRadar() {
   const preset = document.getElementById('presetSelect').value;
   const data = presets[preset];
-  const per90 = document.getElementById('per90Toggle').checked;
   const ctx = document.getElementById('radarChart');
-  
-  if (radarChartInstance) {
-    radarChartInstance.destroy();
-  }
+
+  if (radarChartInstance) radarChartInstance.destroy();
 
   const labels = data.metrics.map(m => m.label + (m.direction === 'less' ? ' ↓' : ''));
   const values = data.metrics.map(m => {
@@ -1501,9 +881,7 @@ function renderRadar() {
     return typeof v === 'string' ? parseFloat(v) : v;
   });
 
-  // Normalize for display
   const maxVal = Math.max(...values);
-  const normalizedData = values.map(v => (v / maxVal) * 100);
 
   radarChartInstance = new Chart(ctx, {
     type: 'radar',
@@ -1511,8 +889,8 @@ function renderRadar() {
       labels: labels,
       datasets: [{
         label: data.name,
-        data: normalizedData,
-        backgroundColor: 'rgba(79, 70, 229, 0.2)',
+        data: values.map(v => (v / maxVal) * 100),
+        backgroundColor: 'rgba(79, 70, 229, 0.15)',
         borderColor: '#4f46e5',
         borderWidth: 2,
         pointBackgroundColor: '#4f46e5',
@@ -1535,17 +913,12 @@ function renderRadar() {
             color: '#9ca3af',
             backdropColor: 'transparent',
             callback: function(value) {
-              // Show actual values at ring positions
               const actualVal = (value / 100) * maxVal;
               return actualVal % 1 === 0 ? actualVal : actualVal.toFixed(1);
             }
           },
-          grid: {
-            color: 'rgba(0,0,0,0.06)',
-          },
-          angleLines: {
-            color: 'rgba(0,0,0,0.06)',
-          },
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          angleLines: { color: 'rgba(0,0,0,0.06)' },
           pointLabels: {
             font: { size: 12, weight: '500' },
             color: '#1a1a2e',
@@ -1559,8 +932,7 @@ function renderRadar() {
           callbacks: {
             label: function(context) {
               const idx = context.dataIndex;
-              const actualVal = values[idx];
-              return `${labels[idx]}: ${actualVal}`;
+              return `${labels[idx]}: ${values[idx]}`;
             }
           }
         }
@@ -1569,10 +941,38 @@ function renderRadar() {
   });
 }
 
+function renderMetricsTable() {
+  const preset = document.getElementById('presetSelect').value;
+  const data = presets[preset];
+  const per90 = document.getElementById('per90Toggle').checked;
+  const tbody = document.getElementById('metricsTableBody');
+  const valueHeader = document.getElementById('metricsTableValueHeader');
+
+  valueHeader.textContent = per90 ? 'Значение (за 90 мин)' : 'Значение';
+
+  tbody.innerHTML = data.metrics.map(m => {
+    const displayVal = getDisplayValue(m);
+    const unitSuffix = per90 && m.key !== 'minutes' ? '/90 мин' : (m.unit || '');
+    const betterIndicator = m.direction === 'less' ? ' <span class="metric-better">↓ лучше</span>' : '';
+    const sumLabel = m.sumLabel ? ` <span class="metric-unit">${m.sumLabel}</span>` : '';
+
+    return `
+      <tr>
+        <td class="metric-name-cell">${m.label}${sumLabel}${betterIndicator}</td>
+        <td class="metric-value-cell">${displayVal}${unitSuffix ? ' ' + unitSuffix : ''}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderAll() {
+  renderRadar();
+  renderMetricsTable();
+}
+
 function changePreset() {
   const preset = document.getElementById('presetSelect').value;
-  document.getElementById('currentArchetype').textContent = presets[preset].name;
-  renderMetrics();
+  renderAll();
 }
 
 // Tabs
@@ -1605,7 +1005,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 
 // Init
-renderMetrics();
+renderAll();
 </script>
 
 </body>
