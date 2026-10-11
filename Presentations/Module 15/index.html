@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Урок 15 · Основы современной разработки ПО</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-600-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono@latest/latin-400-normal.css">
+<style>
+  :root{
+    --bg:#ffffff;
+    --fg:#1a1a1a;
+    --muted:#6b7280;
+    --accent:#FFC107;
+    --accent-soft:#FFF4CC;
+    --accent-deep:#E0A800;
+    --line:#E5E7EB;
+    --card:#FAFAFA;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--fg);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{position:relative;height:100vh;width:100vw;overflow:hidden}
+
+  .progress{position:fixed;top:0;left:0;right:0;height:4px;background:var(--line);z-index:50}
+  .progress-bar{height:100%;background:var(--accent);transition:width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px rgba(255,193,7,.4)}
+
+  .topbar{
+    position:fixed;top:4px;left:0;right:0;
+    padding:14px 32px;display:flex;justify-content:space-between;align-items:center;
+    z-index:40;font-size:13px;color:var(--muted);
+    background:rgba(255,255,255,.85);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .brand{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--fg)}
+  .topbar .brand .dot{width:10px;height:10px;background:var(--accent);border-radius:2px}
+  .topbar .counter{font-family:'JetBrains Mono',monospace;font-size:12px}
+  .topbar .counter strong{color:var(--fg);font-size:14px}
+
+  .slides{position:absolute;inset:0;padding:72px 48px 96px;overflow:hidden}
+  .slide{
+    position:absolute;inset:0;
+    padding:72px 64px 96px;
+    display:flex;flex-direction:column;
+    opacity:0;transform:translateX(40px);
+    transition:opacity .45s ease, transform .45s ease;
+    pointer-events:none;
+    overflow-y:auto;
+  }
+  .slide.active{opacity:1;transform:translateX(0);pointer-events:auto}
+  .slide.prev{transform:translateX(-40px)}
+
+  .slide-inner{max-width:1200px;margin:0 auto;width:100%;flex:1}
+
+  .eyebrow{
+    display:inline-block;font-size:12px;font-weight:600;
+    letter-spacing:2px;text-transform:uppercase;
+    color:var(--accent-deep);
+    padding:6px 12px;background:var(--accent-soft);
+    border-left:3px solid var(--accent);
+    margin-bottom:20px;
+  }
+  h1{font-size:56px;font-weight:700;line-height:1.1;letter-spacing:-1px;margin-bottom:24px}
+  h1 .accent{
+    background:linear-gradient(120deg,var(--accent) 0%,var(--accent) 100%);
+    background-size:100% 30%;background-position:0 88%;
+    background-repeat:no-repeat;padding:0 4px;
+  }
+  h2{font-size:40px;font-weight:700;line-height:1.15;letter-spacing:-.5px;margin-bottom:20px}
+  h3{font-size:24px;font-weight:600;margin-bottom:12px}
+  h4{font-size:18px;font-weight:600;margin-bottom:8px;color:var(--fg)}
+  p{font-size:17px;color:#374151;margin-bottom:12px}
+  .lead{font-size:20px;color:#4B5563;line-height:1.6;margin-bottom:24px}
+
+  .title-slide{justify-content:center;align-items:flex-start}
+  .title-slide .meta{display:flex;gap:16px;align-items:center;font-size:14px;color:var(--muted);margin-bottom:40px}
+  .title-slide .meta .sep{width:4px;height:4px;background:var(--accent);border-radius:50%}
+  .title-slide h1{font-size:72px;margin-bottom:32px}
+  .title-slide .subtitle{font-size:22px;color:var(--muted);max-width:800px;line-height:1.5}
+  .title-slide .tag-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:40px}
+  .tag{padding:8px 16px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--muted);background:#fff}
+  .tag.hl{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent)}
+
+  .section-slide{justify-content:center;align-items:flex-start}
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:120px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:16px;letter-spacing:-4px}
+  .section-slide h2{font-size:56px;margin-bottom:24px}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:24px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;
+    transition:all .25s ease;
+  }
+  .card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,193,7,.1)}
+  .card.accent{background:var(--accent-soft);border-color:var(--accent)}
+  .card .ico{
+    width:40px;height:40px;border-radius:8px;
+    background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;margin-bottom:12px;font-size:18px;
+  }
+  .card h4{margin-bottom:8px}
+  .card p{font-size:14px;color:#4B5563;margin:0}
+  .card ul{list-style:none;padding:0;margin-top:8px}
+  .card ul li{font-size:14px;color:#4B5563;padding:4px 0 4px 20px;position:relative}
+  .card ul li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:2px;background:var(--accent)}
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+  .compare-col{padding:24px;border-radius:12px;border:1px solid var(--line)}
+  .compare-col.pro{background:var(--accent-soft);border-color:var(--accent)}
+  .compare-col h4{font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .compare-col.pro h4::before{content:'✓';color:var(--accent-deep);font-weight:700}
+  .compare-col.con h4::before{content:'✗';color:#DC2626;font-weight:700}
+
+  .feature-list{list-style:none;margin-top:16px}
+  .feature-list li{padding:12px 0 12px 32px;position:relative;border-bottom:1px solid var(--line);font-size:16px;color:#374151}
+  .feature-list li:last-child{border-bottom:none}
+  .feature-list li::before{content:'';position:absolute;left:0;top:18px;width:18px;height:18px;border-radius:4px;background:var(--accent)}
+  .feature-list li strong{color:var(--fg);display:block;margin-bottom:2px}
+
+  .qa-list{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+  .qa{background:#fff;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:16px 20px;transition:all .2s}
+  .qa:hover{background:var(--accent-soft)}
+  .qa .q{font-weight:600;font-size:15px;color:var(--fg);margin-bottom:6px;display:flex;gap:10px}
+  .qa .q-num{color:var(--accent-deep);font-family:'JetBrains Mono',monospace;font-size:13px;flex-shrink:0}
+  .qa .a{font-size:14px;color:#4B5563;padding-left:28px;line-height:1.5}
+
+  .example{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin-top:16px;position:relative;overflow:hidden}
+  .example::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--accent)}
+  .example .label{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-deep);margin-bottom:8px}
+  .example h4{font-size:17px;margin-bottom:10px}
+  .example p{font-size:14px;color:#4B5563;margin:0;line-height:1.6}
+
+  .layer{display:flex;align-items:center;gap:20px;padding:16px 20px;background:#fff;border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
+  .layer .layer-name{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--accent-deep);background:var(--accent-soft);padding:6px 10px;border-radius:6px;min-width:110px;text-align:center}
+  .layer .layer-desc{flex:1;font-size:15px;color:#374151}
+  .layer .layer-focus{font-size:13px;color:var(--muted);border-left:2px solid var(--accent);padding-left:12px;max-width:320px}
+
+  .pipeline{display:flex;align-items:stretch;gap:0;margin-top:24px}
+  .pipe-step{flex:1;padding:16px;background:#fff;border:1px solid var(--line);position:relative;display:flex;flex-direction:column;justify-content:center}
+  .pipe-step:first-child{border-radius:10px 0 0 10px}
+  .pipe-step:last-child{border-radius:0 10px 10px 0}
+  .pipe-step.hl{background:var(--accent-soft);border-color:var(--accent)}
+  .pipe-step .step-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent-deep);font-weight:700}
+  .pipe-step .step-name{font-weight:600;font-size:15px;margin:4px 0}
+  .pipe-step .step-desc{font-size:12px;color:var(--muted)}
+  .pipe-step:not(:last-child)::after{content:'›';position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--accent);font-size:24px;font-weight:700;z-index:2;background:var(--bg);width:16px;height:16px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+
+  .controls{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:center;z-index:50;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);padding:8px 16px;border-radius:999px;border:1px solid var(--line);box-shadow:0 4px 20px rgba(0,0,0,.06)}
+  .nav-btn{width:40px;height:40px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--fg);transition:all .2s;font-size:18px}
+  .nav-btn:hover:not(:disabled){background:var(--accent-soft);color:var(--accent-deep)}
+  .nav-btn:disabled{opacity:.3;cursor:not-allowed}
+  .nav-btn.primary{background:var(--accent);color:#fff}
+  .nav-btn.primary:hover:not(:disabled){background:var(--accent-deep)}
+  .slide-indicator{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);padding:0 8px;min-width:60px;text-align:center}
+
+  .kbd-hint{position:fixed;bottom:24px;right:32px;font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center;z-index:50}
+  kbd{font-family:'JetBrains Mono',monospace;padding:2px 6px;background:#F3F4F6;border:1px solid var(--line);border-radius:4px;font-size:10px;color:var(--fg)}
+
+  .final-slide{justify-content:center;align-items:center;text-align:center}
+  .final-slide .big-mark{font-size:180px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:24px;letter-spacing:-8px}
+
+  .slide::-webkit-scrollbar{width:6px}
+  .slide::-webkit-scrollbar-track{background:transparent}
+  .slide::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .slide::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+  .em-box{background:var(--accent-soft);border-left:4px solid var(--accent);padding:16px 20px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15px;color:#374151}
+  .em-box strong{color:var(--accent-deep)}
+
+  code{font-family:'JetBrains Mono',monospace;background:#F3F4F6;padding:2px 6px;border-radius:4px;font-size:13px;color:var(--accent-deep)}
+
+  /* Examples list for slide 4 */
+  .examples-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+  .examples-col h4{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .examples-col h4::before{content:'';width:10px;height:10px;border-radius:2px;background:var(--accent);flex-shrink:0}
+  .example-item{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:10px;transition:all .2s}
+  .example-item:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .example-item .ex-title{font-weight:600;font-size:14px;color:var(--fg);margin-bottom:4px}
+  .example-item .ex-desc{font-size:13px;color:#4B5563;line-height:1.45}
+
+  /* Agile image */
+  .agile-visual{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px;align-items:center}
+  .agile-visual img{width:100%;border-radius:12px;border:1px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,.05)}
+  .manifesto-link{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;color:var(--accent-deep);text-decoration:none;font-weight:600;font-size:14px;transition:all .2s;margin-top:12px}
+  .manifesto-link:hover{background:var(--accent);color:#fff;transform:translateY(-2px)}
+  .manifesto-link::after{content:'→';font-size:16px}
+
+  /* Expandable terms */
+  .term{cursor:pointer;padding:10px 14px;background:#fff;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;transition:all .2s;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:15px}
+  .term:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .term.open{background:var(--accent-soft);border-color:var(--accent)}
+  .term .term-toggle{color:var(--accent-deep);font-size:20px;font-weight:700;transition:transform .2s}
+  .term.open .term-toggle{transform:rotate(45deg)}
+  .term-desc{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;padding:0 14px;font-size:14px;color:#4B5563;line-height:1.55;background:#fff;border:1px solid transparent;border-radius:0 0 8px 8px;margin-top:-8px;margin-bottom:8px}
+  .term-desc.open{max-height:200px;padding:14px;border-color:var(--line);border-top:none}
+
+  /* Kanban image */
+  .kanban-visual{margin-top:20px;text-align:center}
+  .kanban-visual img{width:100%;max-width:1000px;border-radius:12px;border:1px solid var(--line);box-shadow:0 4px 20px rgba(0,0,0,.08)}
+  .kanban-caption{font-size:13px;color:var(--muted);margin-top:12px;font-style:italic}
+
+  /* Section image */
+  .section-visual{margin-top:32px;max-width:500px}
+  .section-visual img{width:100%;border-radius:12px;border:1px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,.05)}
+
+  /* Simple text for slide 12 */
+  .simple-block{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:14px}
+  .simple-block h4{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .simple-block h4 .badge{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:3px 8px;background:var(--accent);color:#fff;border-radius:4px}
+  .simple-block p{font-size:15px;color:#374151;line-height:1.6;margin:0}
+  .simple-block .analyst-note{margin-top:10px;padding:10px 14px;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:13px;color:#374151}
+
+  /* Expandable bottom cards (slide 17) */
+  .role-card{cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;transition:all .25s ease}
+  .role-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .role-card.open{background:var(--accent-soft);border-color:var(--accent)}
+  .role-card h4{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+  .role-card .role-toggle{color:var(--accent-deep);font-size:20px;font-weight:700;transition:transform .2s}
+  .role-card.open .role-toggle{transform:rotate(45deg)}
+  .role-card .role-short{font-size:14px;color:#4B5563;margin:0}
+  .role-card .role-full{max-height:0;overflow:hidden;transition:max-height .3s ease,margin .3s ease;font-size:14px;color:#374151;line-height:1.6}
+  .role-card.open .role-full{max-height:300px;margin-top:12px}
+
+  @media (max-width:900px){
+    .slide{padding:72px 24px 96px}
+    h1,.title-slide h1{font-size:40px}
+    h2{font-size:32px}
+    .grid-2,.grid-3,.grid-4,.compare,.examples-grid,.agile-visual{grid-template-columns:1fr}
+    .pipeline{flex-direction:column}
+    .pipe-step{border-radius:8px!important}
+    .pipe-step:not(:last-child)::after{display:none}
+    .kbd-hint{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span>Урок 15 · Основы современной разработки ПО</div>
+    <div class="counter"><strong id="currentNum">01</strong> / <span id="totalNum">20</span></div>
+  </div>
+
+  <div class="slides" id="slides">
+
+    <!-- 1. Title -->
+    <section class="slide title-slide">
+      <div class="slide-inner">
+        <div class="meta">
+          <span>Модуль · Системный и бизнес-анализ</span>
+          <span class="sep"></span>
+          <span>Урок 15 из 16</span>
+          <span class="sep"></span>
+          <span>20 минут</span>
+        </div>
+        <h1>Основы <span class="accent">современной</span><br>разработки ПО</h1>
+        <p class="subtitle">Итерационная разработка, Agile, Scrum, Kanban. Архитектура: фронтенд, бэкенд, middleware, брокеры, базы данных. Релизный цикл и CI/CD.</p>
+        <div class="tag-row">
+          <span class="tag hl">Agile</span>
+          <span class="tag hl">Scrum</span>
+          <span class="tag hl">Kanban</span>
+          <span class="tag">Frontend</span>
+          <span class="tag">Backend</span>
+          <span class="tag">Middleware</span>
+          <span class="tag">CI/CD</span>
+          <span class="tag">Брокеры сообщений</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Goals -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">Цель урока</span>
+        <h2>Чему мы научимся</h2>
+        <p class="lead">Сформировать у аналитиков целостное представление о жизненном цикле разработки ПО, современных методологиях, архитектурных компонентах и процессах доставки ценности пользователю.</p>
+        <div class="grid-3">
+          <div class="card">
+            <div class="ico">01</div>
+            <h4>Методологии</h4>
+            <p>Понимать различия между Waterfall, Agile, Scrum и Kanban. Знать, когда что применять.</p>
+          </div>
+          <div class="card">
+            <div class="ico">02</div>
+            <h4>Архитектура</h4>
+            <p>Различать слои системы: frontend, backend, middleware, брокеры, БД. Понимать, где "живёт" требование.</p>
+          </div>
+          <div class="card">
+            <div class="ico">03</div>
+            <h4>Релизный цикл</h4>
+            <p>Знать путь кода от идеи до пользователя. Понимать CI/CD, UAT, Feature Flags.</p>
+          </div>
+        </div>
+        <div class="em-box" style="margin-top:32px">
+          <strong>Ключевой принцип:</strong> Аналитик должен говорить с разработчиками на одном языке и понимать технические ограничения и возможности системы.
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Section 1 divider -->
+    <section class="slide section-slide">
+      <div class="slide-inner" style="display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center">
+        <div>
+          <div class="section-num">01</div>
+          <span class="eyebrow">Часть первая</span>
+          <h2>Методологии и процессы<br>разработки</h2>
+          <p class="lead">От каскадной модели Waterfall до гибких подходов Agile, Scrum и Kanban. Как выбрать правильный фреймворк для команды и проекта.</p>
+        </div>
+        <div class="section-visual">
+          <img src="C:\Users\Admin\Downloads\3s.png" alt="Методологии разработки">
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Waterfall vs Iterative -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">1.1 · Эволюция подходов</span>
+        <h2>От Waterfall к итерациям</h2>
+        <p class="lead">Разработка ПО прошла путь от жёсткого планирования к гибкости и адаптивности.</p>
+        <div class="compare">
+          <div class="compare-col con">
+            <h4>Waterfall (Каскадная модель)</h4>
+            <p style="font-size:14px;color:#4B5563;margin-bottom:12px">Последовательное выполнение этапов: Анализ → Дизайн → Разработка → Тестирование → Внедрение. Требования фиксируются "на берегу".</p>
+            <ul style="list-style:none;padding:0;font-size:14px">
+              <li style="padding:4px 0"><strong style="color:#059669">✓</strong> Предсказуемый бюджет и сроки</li>
+              <li style="padding:4px 0"><strong style="color:#DC2626">✗</strong> Ценность доставляется только в конце</li>
+              <li style="padding:4px 0"><strong style="color:#DC2626">✗</strong> Высокая стоимость изменений</li>
+            </ul>
+          </div>
+          <div class="compare-col pro">
+            <h4>Итерационная разработка</h4>
+            <p style="font-size:14px;color:#4B5563;margin-bottom:12px">Разбиение проекта на короткие циклы (итерации). По итогам каждой создаётся работающий инкремент продукта.</p>
+            <ul style="list-style:none;padding:0;font-size:14px">
+              <li style="padding:4px 0"><strong style="color:#059669">✓</strong> Ранняя обратная связь от бизнеса</li>
+              <li style="padding:4px 0"><strong style="color:#059669">✓</strong> Возможность адаптировать требования</li>
+              <li style="padding:4px 0"><strong style="color:#059669">✓</strong> Ценность поставляется регулярно</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples-grid">
+          <div class="examples-col">
+            <h4>Примеры Waterfall-проектов</h4>
+            <div class="example-item">
+              <div class="ex-title">🏛 Государственная информационная система</div>
+              <div class="ex-desc">Чёткое ТЗ от регулятора, жёсткие сроки, бюджет из госконтракта. Изменения после старта невозможны.</div>
+            </div>
+            <div class="example-item">
+              <div class="ex-title">🏥 Медицинское оборудование с ПО</div>
+              <div class="ex-desc">Сертификация, безопасность жизни, требования фиксируются на этапе проектирования "железа".</div>
+            </div>
+            <div class="example-item">
+              <div class="ex-title">🏗 Строительство ЦОД с интеграцией</div>
+              <div class="ex-desc">Физическая инфраструктура: нельзя "откатить" проложенный кабель. Последовательные этапы обязательны.</div>
+            </div>
+          </div>
+          <div class="examples-col">
+            <h4>Примеры итерационных проектов</h4>
+            <div class="example-item">
+              <div class="ex-title">📱 Мобильное приложение банка</div>
+              <div class="ex-desc">Каждые 2 недели — новая фича. Пользователи тестируют, аналитики получают фидбек, требования уточняются.</div>
+            </div>
+            <div class="example-item">
+              <div class="ex-title">🛒 Интернет-магазин (e-commerce)</div>
+              <div class="ex-desc">Сначала каталог и корзина, потом оплата, затем личный кабинет. Ценность для бизнеса — с первого релиза.</div>
+            </div>
+            <div class="example-item">
+              <div class="ex-title">🎮 Игровой сервис / стартап</div>
+              <div class="ex-desc">MVP за месяц, затем гипотезы проверяются на реальных пользователях. Без итераций — смерть продукта.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Agile -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">1.2 · Философия</span>
+        <h2>Agile — это не метод, а философия</h2>
+        <p class="lead">Agile — семейство подходов, основанных на ценностях и принципах Agile Manifesto, подписанного 17 независимыми экспертами в 2001 году.</p>
+        <div class="agile-visual">
+          <div>
+            <h3>Ключевые ценности</h3>
+            <ul class="feature-list">
+              <li><strong>Люди и взаимодействие</strong> важнее процессов и инструментов</li>
+              <li><strong>Работающий продукт</strong> важнее исчерпывающей документации</li>
+              <li><strong>Сотрудничество с клиентом</strong> важнее согласования контракта</li>
+              <li><strong>Готовность к изменениям</strong> важнее следования плану</li>
+            </ul>
+            <a href="https://agilemanifesto.org/iso/ru/manifesto.html" target="_blank" rel="noopener" class="manifesto-link">Прочитать Agile Manifesto (2001)</a>
+          </div>
+          <div>
+            <img src="C:\Users\Admin\Downloads\5s.png" alt="Agile Manifesto">
+          </div>
+        </div>
+        <div class="em-box" style="margin-top:24px">
+          <strong>Что это значит для аналитика:</strong> В Agile аналитик не пишет ТЗ на 500 страниц, а формирует живой бэклог требований, который постоянно уточняется вместе с командой и бизнесом.
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Scrum -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">1.3 · Фреймворк</span>
+        <h2>Scrum</h2>
+        <p class="lead">Фреймворк для управления продуктом в условиях неопределённости. Работа организована в фиксированные отрезки времени — спринты (1–4 недели). <em style="color:var(--muted);font-size:15px">Нажмите на термин, чтобы узнать подробнее ↓</em></p>
+        <div class="grid-3">
+          <div>
+            <h3 style="font-size:18px;margin-bottom:12px">Роли</h3>
+            <div class="term" data-target="term-po">
+              <span>Product Owner (PO)</span>
+              <span class="term-toggle">+</span>
+            </div>
+            <div class="term-desc" id="term-po">Product Owner — это "голос бизнеса" в команде. Он отвечает за ценность продукта и приоритизацию бэклога. PO решает, что делать в первую очередь, и принимает готовый инкремент. Аналитик часто работает в тесной связке с PO или сам выполняет его функции.</div>
+            
+            <div class="term" data-target="term-sm">
+              <span>Scrum Master</span>
+              <span class="term-toggle">+</span>
+            </div>
+            <div class="term-desc" id="term-sm">Scrum Master — это "тренер" команды и защитник процесса. Он устраняет блокеры, следит за соблюдением Scrum-практик и помогает команде становиться эффективнее. Это не менеджер, а лидер-сервант, который обслуживает интересы команды.</div>
+            
+            <div class="term" data-target="term-dev">
+              <span>Developers</span>
+              <span class="term-toggle">+</span>
+            </div>
+            <div class="term-desc" id="term-dev">Developers — это кросс-функциональная команда специалистов (разработчики, тестировщики, дизайнеры, аналитики), которая непосредственно создаёт продукт. Команда самоорганизующаяся: сама решает, как реализовать требования PO.</div>
+          </div>
+          <div>
+            <h3 style="font-size:18px;margin-bottom:12px">Артефакты</h3>
+            <div class="term" data-target="term-pb">
+              <span>Product Backlog</span>
+              <span class="term-toggle">+</span>
+            </div>
+            <div class="term-desc" id="term-pb">Product Backlog — это упорядоченный по приоритету список всего, что может понадобиться в продукте. Это "живой" документ: он постоянно пополняется, уточняется и пересортируется PO в зависимости от потребностей бизнеса.</div>
+            
+            <div class="term" data-target="term-sb">
+              <span>Sprint Backlog</span>
+              <span class="term-toggle">+</span>
+            </div>
+            <div class="term-desc" id="term-sb">Sprint Backlog — это набор задач, которые команда отобрала на текущий спринт. Это обязательство команды: они берут на себя ответственность выполнить именно эти задачи за отведённые 1–4 недели.</div>
+            
+            <div class="term" data-target="term-inc">
+              <span>Инкремент</span>
+              <span class="term-toggle">+</span>
+            </div>
+            <div class="term-desc" id="term-inc">Инкремент — это готовый, работающий кусок продукта, созданный за спринт. Он должен соответствовать Definition of Done и быть потенциально готовым к выпуску. Каждый новый инкремент добавляет ценность к предыдущим.</div>
+          </div>
+          <div>
+            <h3 style="font-size:18px;margin-bottom:12px">События</h3>
+            <div class="term" data-target="term-plan">
+              <span>Планирование спринта</span>
+              <span class="term-toggle">+</span>
+            </div>
+            <div class="term-desc" id="term-plan">Встреча в начале спринта, где команда вместе с PO решает, какие задачи из Product Backlog возьмёт в работу. Аналитик помогает описать задачи так, чтобы команда поняла суть и могла оценить объём работы.</div>
+            
+            <div class="term" data-target="term-daily">
+              <span>Daily (15 мин)</span>
+              <span class="term-toggle">+</span>
+            </div>
+            <div class="term-desc" id="term-daily">Ежедневная короткая встреча стоя, где каждый отвечает на 3 вопроса: что сделал вчера, что сделаю сегодня, какие есть блокеры. Аналитик слушает и выявляет проблемы, которые могут повлиять на требования.</div>
+            
+            <div class="term" data-target="term-rev">
+              <span>Sprint Review</span>
+              <span class="term-toggle">+</span>
+            </div>
+            <div class="term-desc" id="term-rev">Демонстрация готового инкремента заказчику и стейкхолдерам в конце спринта. Аналитик помогает показать продукт с точки зрения бизнес-ценности и собирает обратную связь для следующих итераций.</div>
+            
+            <div class="term" data-target="term-retro">
+              <span>Ретроспектива</span>
+              <span class="term-toggle">+</span>
+            </div>
+            <div class="term-desc" id="term-retro">Встреча команды после Review, где обсуждают, что прошло хорошо, что можно улучшить, и какие конкретные действия взять в следующий спринт. Аналитик предлагает улучшения в процессах сбора и описания требований.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Kanban -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">1.4 · Метод потока</span>
+        <h2>Kanban</h2>
+        <p class="lead">Метод визуализации работы и управления непрерывным потоком задач. Нет фиксированных спринтов — есть поток создания ценности.</p>
+        <div class="grid-2">
+          <div>
+            <h3>Ключевые принципы</h3>
+            <ul class="feature-list">
+              <li><strong>Визуализация доски</strong> — To Do → In Progress → Done</li>
+              <li><strong>WIP limits</strong> — жёсткое ограничение незавершённой работы</li>
+              <li><strong>Управление потоком</strong> — контроль Lead Time и Cycle Time</li>
+              <li><strong>Явные правила</strong> — процесс прозрачен для всех</li>
+            </ul>
+            <h3 style="margin-top:20px">Где применяется</h3>
+            <ul style="list-style:none;padding:0;font-size:14px">
+              <li style="padding:6px 0;color:#374151">• Команды поддержки и эксплуатации</li>
+              <li style="padding:6px 0;color:#374151">• Maintenance-проекты и сопровождение</li>
+              <li style="padding:6px 0;color:#374151">• Операционная деятельность с хаотичным потоком</li>
+            </ul>
+          </div>
+          <div class="kanban-visual">
+            <img src="C:\Users\Admin\Downloads\7s.png" alt="Kanban доска в Jira">
+            <div class="kanban-caption">Пример Kanban-доски в Jira с колонками и карточками задач</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Q&A Part 1 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">Часть 1 · Вопросы для самопроверки</span>
+        <h2>Топ-5 вопросов по методологиям</h2>
+        <div class="qa-list">
+          <div class="qa">
+            <div class="q"><span class="q-num">Q1</span>В чём фундаментальная разница между Agile и Scrum?</div>
+            <div class="a">Agile — это философия и набор ценностей (манифест), а Scrum — конкретный фреймворк (набор правил, ролей и событий) для реализации Agile на практике.</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q2</span>Когда аналитику стоит порекомендовать Waterfall, а не Agile?</div>
+            <div class="a">Когда требования жёстко зафиксированы регулятором, используется методология "железа" (строительство ЦОД), или цена ошибки на этапе эксплуатации катастрофически высока (медицина, авионика).</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q3</span>Как понять, что лучше для команды: Scrum или Kanban?</div>
+            <div class="a">Новый продукт с понятным бэклогом и необходимостью ритма — Scrum. Поддержка с хаотичным потоком задач и невозможностью планирования на 2 недели — Kanban.</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q4</span>Какова роль системного аналитика в Scrum-церемониях?</div>
+            <div class="a">На планировании — помогает команде понять задачу. На Daily — выявляет блокеры. На Review — демонстрирует инкремент заказчику. На Ретроспективе — предлагает улучшения процессов.</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q5</span>Что такое Definition of Done (DoD) и зачем он аналитику?</div>
+            <div class="a">Единый чек-лист критериев, при которых задача считается выполненной (код написан, тесты пройдены, документация обновлена, аналитик провёл UAT). Не позволяет принимать "сырой" функционал.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Examples Part 1 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">Часть 1 · Практика</span>
+        <h2>Примеры из реальной жизни</h2>
+        <div class="example">
+          <span class="label">Пример 1 · Scrum в мобильном банке</span>
+          <h4>Внедрение входа по Face ID</h4>
+          <p>Аналитик заранее (на груминге) описывает User Story, рисует экраны в Figma, описывает API-контракт с бэкендом. На планировании команда берёт это в двухнедельный спринт. В конце спринта на Review аналитик показывает бизнесу работающую кнопку на тестовом стенде, получает фидбек и сразу закладывает доработки в следующий спринт.</p>
+        </div>
+        <div class="example">
+          <span class="label">Пример 2 · Kanban на заводе</span>
+          <h4>Сопровождение ERP-системы</h4>
+          <p>Аналитик сопровождает крупную ERP-систему на заводе. У него нет спринтов. Утром приходит заявка: "Сломалась печать накладных". Аналитик заводит задачу на доску, назначает приоритет "Высокий", разработчик берёт её в работу (WIP-лимит позволяет). Через 4 часа баг починен и выкачен на прод. Аналитик закрывает задачу и берёт следующую из бэклога.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Section 2 divider -->
+    <section class="slide section-slide">
+      <div class="slide-inner" style="display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center">
+        <div>
+          <div class="section-num">02</div>
+          <span class="eyebrow">Часть вторая</span>
+          <h2>Архитектура<br>современного ПО</h2>
+          <p class="lead">Frontend, Backend, Middleware, брокеры сообщений и базы данных. Где "живёт" ваше требование и как корректно его сформулировать.</p>
+        </div>
+        <div class="section-visual">
+          <img src="C:\Users\Admin\Downloads\10s.png" alt="Архитектура ПО">
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Architecture layers -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">2.1–2.3 · Слои системы</span>
+        <h2>Frontend · Backend · Middleware</h2>
+        <p class="lead">Три ключевых слоя, через которые проходит любое требование.</p>
+        <div class="layer">
+          <div class="layer-name">Frontend</div>
+          <div class="layer-desc"><strong>Клиентская часть.</strong> Всё, с чем взаимодействует пользователь: Web-браузер, мобильное приложение, десктоп.</div>
+          <div class="layer-focus">Фокус аналитика: UX, пользовательские сценарии, валидация на клиенте, обработка состояний</div>
+        </div>
+        <div class="layer">
+          <div class="layer-name">Backend</div>
+          <div class="layer-desc"><strong>Серверная часть.</strong> "Мозг" системы: бизнес-логика, обработка данных, безопасность, вычисления, интеграции.</div>
+          <div class="layer-focus">Фокус: бизнес-правила, алгоритмы, API-контракты (REST/GraphQL), обработка ошибок</div>
+        </div>
+        <div class="layer">
+          <div class="layer-name">Middleware</div>
+          <div class="layer-desc"><strong>Промежуточный слой.</strong> Связывает разные приложения: маршрутизация, трансформация данных, безопасность.</div>
+          <div class="layer-focus">Фокус: интеграции, маппинг данных, rate limiting, трансформация XML ↔ JSON</div>
+        </div>
+        <div class="em-box">
+          <strong>Пример middleware:</strong> API Gateway — "дверь" во всю микросервисную архитектуру. Централизует доступ, собирает аналитику, "склеивает" несколько запросов в один.
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Brokers & DB - simplified -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">2.4–2.5 · Данные и события</span>
+        <h2>Брокеры сообщений и базы данных</h2>
+        <p class="lead">Простыми словами: как системы общаются между собой и где хранят информацию.</p>
+        <div class="grid-2">
+          <div>
+            <div class="simple-block">
+              <h4><span class="badge">БРОКЕР</span> Брокер сообщений</h4>
+              <p>Представьте почтовое отделение. Одна система кладёт "письмо" (сообщение) в ящик, а другая забирает его, когда будет готова. Даже если получатель "отошёл" — письмо не потеряется, его доставят позже.</p>
+              <div class="analyst-note"><strong>Зачем нужно:</strong> чтобы системы не ждали друг друга и работали независимо. Например, после оформления заказа склад, почта и бухгалтерия получают уведомления параллельно.</div>
+            </div>
+            <div class="simple-block">
+              <h4><span class="badge">ПРИМЕРЫ</span> Популярные брокеры</h4>
+              <p><strong>Kafka</strong> — для огромных потоков данных (логи, события). <strong>RabbitMQ</strong> — для классических задач между сервисами. <strong>IBM MQ</strong> — в крупных банках и госсекторе.</p>
+            </div>
+          </div>
+          <div>
+            <div class="simple-block">
+              <h4><span class="badge">SQL</span> Реляционные базы данных</h4>
+              <p>Это как аккуратный Excel с множеством связанных таблиц. Каждая запись — на своём месте, ничего не потеряется. Идеально, когда важна точность и связи: деньги, заказы, пользователи.</p>
+              <div class="analyst-note"><strong>Когда использовать:</strong> финансы, заказы, любые данные, где важна строгая структура и нельзя потерять ни копейки.</div>
+            </div>
+            <div class="simple-block">
+              <h4><span class="badge">NoSQL</span> Нереляционные базы данных</h4>
+              <p>Это как гибкая картотека, куда можно класть что угодно: документы, списки, пары "ключ-значение". Работает очень быстро, но без строгой структуры. Идеально для каталогов, кэша, сессий.</p>
+              <div class="analyst-note"><strong>Когда использовать:</strong> когда данные разные по структуре, нужна молниеносная скорость или их очень много (например, история просмотров).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. Q&A Part 2 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">Часть 2 · Вопросы для самопроверки</span>
+        <h2>Топ-5 вопросов по архитектуре</h2>
+        <div class="qa-list">
+          <div class="qa">
+            <div class="q"><span class="q-num">Q1</span>Где должна происходить валидация данных: на Frontend или Backend?</div>
+            <div class="a">На обоих. На Frontend — для удобства пользователя (мгновенная реакция). На Backend — обязательно для безопасности и целостности (Frontend можно обойти).</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q2</span>Как выбрать между синхронным REST и асинхронным брокером?</div>
+            <div class="a">Результат нужен "здесь и сейчас" (баланс счёта) — синхронный REST. Операция долгая или нужно уведомить несколько систем (склад + email) — асинхронный брокер.</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q3</span>В чём разница SQL и NoSQL с точки зрения требований?</div>
+            <div class="a">Данные структурированы, важны связи и транзакции (финансы) — SQL. Структура меняется или это массивы/логи (каталог товаров) — NoSQL.</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q4</span>Что такое API Gateway и зачем он бизнесу?</div>
+            <div class="a">"Дверь" в микросервисную архитектуру. Централизует доступ, собирает аналитику, "склеивает" несколько запросов в один, экономя трафик мобильного приложения.</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q5</span>Что такое идемпотентность и почему аналитик должен о ней писать?</div>
+            <div class="a">Свойство операции при повторном вызове давать тот же результат. Аналитик описывает это для интеграций, чтобы при повторной отправке (сбой сети) деньги не списались дважды.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. Examples Part 2 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">Часть 2 · Практика</span>
+        <h2>Примеры из реальной жизни</h2>
+        <div class="example">
+          <span class="label">Пример 1 · Архитектура E-commerce</span>
+          <h4>Оформление заказа с асинхронной обработкой</h4>
+          <p>Для проверки корзины и отображения товаров — синхронный REST API (пользователь ждёт). Для создания заказа и списания бонусов — асинхронная схема: фронтенд отправляет запрос, бэкенд возвращает <code>202 Accepted</code>, событие <code>OrderCreated</code> падает в Kafka. Сервис склада и сервис лояльности независимо читают его и выполняют свою работу.</p>
+        </div>
+        <div class="example">
+          <span class="label">Пример 2 · Выбор БД и Middleware</span>
+          <h4>Профиль пользователя в финтехе</h4>
+          <p>Основные данные (логин, пароль, баланс) — в PostgreSQL (строгая целостность). История просмотров товаров и сессии — в Redis (NoSQL, оперативная память, молниеносная скорость). Для передачи данных в систему аналитики маркетологов — API Gateway, трансформирующий внутренний JSON в требуемый внешний формат.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. Section 3 divider -->
+    <section class="slide section-slide">
+      <div class="slide-inner" style="display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center">
+        <div>
+          <div class="section-num">03</div>
+          <span class="eyebrow">Часть третья</span>
+          <h2>Релизный цикл<br>и CI/CD</h2>
+          <p class="lead">Как код попадает от компьютера разработчика до пользователя. Путь задачи через среды, автоматизация и роль аналитика в этом процессе.</p>
+        </div>
+        <div class="section-visual">
+          <img src="C:\Users\Admin\Downloads\15s.png" alt="CI/CD пайплайн">
+        </div>
+      </div>
+    </section>
+
+    <!-- 16. Release cycle -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">3.1 · Среда за средой</span>
+        <h2>Релизный цикл и среды</h2>
+        <p class="lead">Типичный путь задачи от идеи до пользователя проходит через четыре ключевые среды.</p>
+        <div class="pipeline">
+          <div class="pipe-step">
+            <div class="step-num">STEP 01</div>
+            <div class="step-name">Local / Dev</div>
+            <div class="step-desc">Локальные машины разработчиков</div>
+          </div>
+          <div class="pipe-step">
+            <div class="step-num">STEP 02</div>
+            <div class="step-name">Test / QA</div>
+            <div class="step-desc">Автотесты и ручное тестирование</div>
+          </div>
+          <div class="pipe-step hl">
+            <div class="step-num">STEP 03</div>
+            <div class="step-name">Staging / UAT</div>
+            <div class="step-desc">Приёмка аналитиком и бизнесом</div>
+          </div>
+          <div class="pipe-step">
+            <div class="step-num">STEP 04</div>
+            <div class="step-name">Production</div>
+            <div class="step-desc">Боевая среда, реальные пользователи</div>
+          </div>
+        </div>
+        <div class="em-box" style="margin-top:32px">
+          <strong>Staging vs Production:</strong> Staging — копия продакшена для тестирования с обезличенными данными и заглушками вместо платёжных шлюзов. Production — боевая среда с реальными деньгами и данными пользователей.
+        </div>
+      </div>
+    </section>
+
+    <!-- 17. CI/CD -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">3.2 · Автоматизация</span>
+        <h2>CI/CD</h2>
+        <div class="grid-2">
+          <div class="card">
+            <div class="ico">CI</div>
+            <h4>Continuous Integration</h4>
+            <p>Разработчики часто сливают код в общую ветку. Каждый коммит автоматически собирает приложение и прогоняет юнит-тесты.</p>
+            <div class="em-box" style="margin-top:12px;margin-bottom:0"><strong>Цель:</strong> мгновенно находить ошибки и конфликты.</div>
+          </div>
+          <div class="card">
+            <div class="ico">CD</div>
+            <h4>Continuous Delivery / Deployment</h4>
+            <p>Код всегда в состоянии, готовом к релизу. Развёртывание на Staging — автоматически, на Prod — по кнопке (Delivery) или полностью автоматически (Deployment).</p>
+            <div class="em-box" style="margin-top:12px;margin-bottom:0"><strong>Цель:</strong> безопасная и быстрая доставка ценности.</div>
+          </div>
+        </div>
+        <h3 style="margin-top:32px">Роль аналитика в CI/CD <span style="font-size:14px;color:var(--muted);font-weight:400;margin-left:8px">нажмите на карточку для подробностей ↓</span></h3>
+        <div class="grid-3">
+          <div class="role-card" data-target="role-1">
+            <h4>UAT <span class="role-toggle">+</span></h4>
+            <p class="role-short">Приёмочное тестирование на Staging перед релизом</p>
+            <div class="role-full" id="role-1">UAT (User Acceptance Testing) — это финальная проверка функционала "глазами бизнеса" перед выкаткой на прод. Аналитик проверяет не просто "работает ли кнопка", а решает ли фича изначальную бизнес-задачу. Он проходит пользовательские сценарии, описанные в требованиях, и сверяет поведение системы с ожиданиями заказчика. Если что-то не так — задача возвращается в разработку. UAT — это последний рубеж перед тем, как фича попадёт к реальным пользователям.</div>
+          </div>
+          <div class="role-card" data-target="role-2">
+            <h4>Feature Flags <span class="role-toggle">+</span></h4>
+            <p class="role-short">Включение фичи для 5% пользователей без релиза</p>
+            <div class="role-full" id="role-2">Feature Flags — это "тумблеры" в коде, которые включают или выключают функции без выкатки нового кода. Аналитик может сам, через админку, включить новую фичу для тестовой группы (например, 5% пользователей) и посмотреть в аналитику: выросли ли конверсии, нет ли багов. Если всё хорошо — флаг включается для всех. Если что-то пошло не так — флаг выключается за секунду без участия разработчиков. Это безопасный способ проверять гипотезы и постепенно раскатывать новые функции.</div>
+          </div>
+          <div class="role-card" data-target="role-3">
+            <h4>Release Notes <span class="role-toggle">+</span></h4>
+            <p class="role-short">Список изменений для бизнеса и пользователей</p>
+            <div class="role-full" id="role-3">Release Notes — это документ, в котором описано, что именно изменилось в новом релизе. Аналитик составляет его на языке, понятном бизнесу и пользователям: не "обновлён эндпоинт /api/v2/users", а "теперь в профиле можно загружать аватар в формате WebP". Хорошие Release Notes помогают службе поддержки отвечать на вопросы клиентов, бизнесу понимать, за что он заплатил в этом релизе, и пользователям узнавать о новых возможностях. Это мост между техническим миром разработки и бизнес-миром эксплуатации.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18. Q&A Part 3 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">Часть 3 · Вопросы для самопроверки</span>
+        <h2>Топ-5 вопросов по CI/CD</h2>
+        <div class="qa-list">
+          <div class="qa">
+            <div class="q"><span class="q-num">Q1</span>Чем среда Staging отличается от Production?</div>
+            <div class="a">Staging — копия продакшена для тестирования с обезличенными данными и заглушками. Production — боевая среда с реальными пользователями, деньгами и данными.</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q2</span>Что такое CI и как это меняет работу аналитика?</div>
+            <div class="a">Continuous Integration — автоматическая сборка и проверка кода при каждом сохранении. Изменения попадают на тестовый стенд чаще (иногда несколько раз в день), приёмку нужно проводить мелкими порциями.</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q3</span>Что такое UAT и кто его проводит?</div>
+            <div class="a">User Acceptance Testing — финальная проверка, что система решает бизнес-задачу. Проводит бизнес-заказчик или системный/бизнес-аналитик как его представитель.</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q4</span>Что такое Feature Flags и как аналитик может их использовать?</div>
+            <div class="a">"Тумблеры" в коде, включающие/выключающие функции без выкатки нового кода. Для A/B-тестирования, постепенного раскатывания (canary release) или быстрого отключения упавшего функционала.</div>
+          </div>
+          <div class="qa">
+            <div class="q"><span class="q-num">Q5</span>Зачем аналитику понимать пайплайн CI/CD?</div>
+            <div class="a">Чтобы знать, на каком стенде и когда можно тестировать, как быстро откатить баг, и как правильно описать требования к автотестам, чтобы они не падали при каждом релизе.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 19. Examples Part 3 -->
+    <section class="slide">
+      <div class="slide-inner">
+        <span class="eyebrow">Часть 3 · Практика</span>
+        <h2>Примеры из реальной жизни</h2>
+        <div class="example">
+          <span class="label">Пример 1 · Feature Flags и UAT</span>
+          <h4>A/B-тест нового дизайна главной страницы</h4>
+          <p>Команда разработала новый дизайн. Код уже выкачан на Production через CI/CD, но "спрятан" за Feature Flag. Аналитик заходит в админку, включает флаг для тестовой группы (5% пользователей) и смотрит в аналитику: выросли ли конверсии? Если да — флаг включается для всех. Если нет — флаг выключается, и аналитик формирует новые требования на доработку.</p>
+        </div>
+        <div class="example">
+          <span class="label">Пример 2 · Hotfix через CI/CD</span>
+          <h4>Критический баг с промокодом в пятницу вечером</h4>
+          <p>На Production падает критический баг: не применяется промокод. Разработчик быстро чинит код. Благодаря настроенному CI/CD пайплайну код автоматически проходит юнит-тесты, собирается и деплоится на Staging. Аналитик за 10 минут проводит экспресс-UAT, проверяет, что промокод работает и ничего не сломалось. После его апрува пайплайн автоматически выкатывает хотфикс на Production. Весь процесс занимает 40 минут вместо 2 дней.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 20. Final -->
+    <section class="slide final-slide">
+      <div class="slide-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div class="big-mark">15</div>
+        <span class="eyebrow">Итоги урока</span>
+        <h2 style="text-align:center;max-width:800px;margin:0 auto 24px">Аналитик, понимающий разработку,<br>говорит с командой на одном языке</h2>
+        <p class="lead" style="text-align:center;max-width:700px;margin:0 auto">Методологии, архитектура и релизный цикл — это контекст, в котором живут ваши требования. Понимание этого контекста превращает аналитика из "писателя ТЗ" в полноценного участника продуктовой команды.</p>
+        <div class="tag-row" style="justify-content:center;margin-top:40px">
+          <span class="tag hl">Agile · Scrum · Kanban</span>
+          <span class="tag hl">Frontend · Backend · Middleware</span>
+          <span class="tag hl">CI/CD · Feature Flags · UAT</span>
+        </div>
+              </div>
+    </section>
+
+  </div>
+
+  <div class="controls">
+    <button class="nav-btn" id="prevBtn" aria-label="Предыдущий слайд">‹</button>
+    <div class="slide-indicator"><span id="currentNum2">1</span> / <span id="totalNum2">20</span></div>
+    <button class="nav-btn primary" id="nextBtn" aria-label="Следующий слайд">›</button>
+  </div>
+
+  <div class="kbd-hint">
+    <kbd>←</kbd><kbd>→</kbd> навигация · <kbd>Space</kbd> далее
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const progressBar = document.getElementById('progressBar');
+  const currentNum = document.getElementById('currentNum');
+  const totalNum = document.getElementById('totalNum');
+  const currentNum2 = document.getElementById('currentNum2');
+  const totalNum2 = document.getElementById('totalNum2');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  totalNum.textContent = String(total).padStart(2,'0');
+  totalNum2.textContent = total;
+
+  function render(){
+    slides.forEach((s,i)=>{
+      s.classList.remove('active','prev');
+      if(i===current) s.classList.add('active');
+      else if(i<current) s.classList.add('prev');
+    });
+    const progress = ((current+1)/total)*100;
+    progressBar.style.width = progress + '%';
+    currentNum.textContent = String(current+1).padStart(2,'0');
+    currentNum2.textContent = current+1;
+    prevBtn.disabled = current===0;
+    nextBtn.disabled = current===total-1;
+    slides[current].scrollTop = 0;
+  }
+
+  function next(){ if(current<total-1){current++;render()} }
+  function prev(){ if(current>0){current--;render()} }
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown'){
+      e.preventDefault(); next();
+    } else if(e.key==='ArrowLeft' || e.key==='PageUp'){
+      e.preventDefault(); prev();
+    } else if(e.key==='Home'){
+      current=0; render();
+    } else if(e.key==='End'){
+      current=total-1; render();
+    }
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e=>{ touchStartX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', e=>{
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if(Math.abs(diff)>50){
+      if(diff<0) next(); else prev();
+    }
+  });
+
+  // Expandable terms (slide 6 - Scrum)
+  document.querySelectorAll('.term').forEach(term=>{
+    term.addEventListener('click', ()=>{
+      const targetId = term.getAttribute('data-target');
+      const desc = document.getElementById(targetId);
+      const isOpen = term.classList.contains('open');
+      
+      // Close all in same column
+      const parent = term.parentElement;
+      parent.querySelectorAll('.term').forEach(t=>{
+        t.classList.remove('open');
+        const d = document.getElementById(t.getAttribute('data-target'));
+        if(d) d.classList.remove('open');
+      });
+      
+      if(!isOpen){
+        term.classList.add('open');
+        if(desc) desc.classList.add('open');
+      }
+    });
+  });
+
+  // Expandable role cards (slide 17)
+  document.querySelectorAll('.role-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      card.classList.toggle('open');
+    });
+  });
+
+  render();
+</script>
+</body>
+</html>
