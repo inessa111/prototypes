@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFM — Модуль «Игроки» (Прототип)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: #f5f5f5; color: #111; display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { width: 320px; background: #fff; border-right: 1px solid #ddd; padding: 16px; overflow-y: auto; height: 100vh; position: sticky; top: 0; }
+        .sidebar h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #111; }
+        .sidebar h2:first-child { margin-top: 0; }
+        .filter-group { margin-bottom: 14px; }
+        .filter-group label { font-size: 13px; font-weight: 600; margin-bottom: 4px; display: block; }
+        .filter-group select, .filter-group input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
+        .filter-group .multi-select { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+        .chip { background: #eee; padding: 4px 8px; border-radius: 12px; font-size: 11px; cursor: pointer; border: 1px solid #ccc; }
+        .chip.active { background: #111; color: #fff; border-color: #111; }
+        .btn { padding: 8px 14px; border: 1px solid #111; background: #fff; cursor: pointer; font-size: 13px; border-radius: 4px; transition: 0.2s; }
+        .btn:hover { background: #111; color: #fff; }
+        .btn-primary { background: #111; color: #fff; }
+        .btn-primary:hover { background: #333; }
+        .btn-sm { padding: 6px 10px; font-size: 12px; }
+        .btn-group { display: flex; gap: 6px; margin-top: 12px; }
+        
+        /* Main Content */
+        .main { flex: 1; padding: 20px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .header h1 { font-size: 20px; }
+        .header-actions { display: flex; gap: 8px; }
+        
+        /* Table */
+        .table-container { background: #fff; border-radius: 6px; border: 1px solid #ddd; overflow: hidden; }
+        .table-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid #ddd; background: #fafafa; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #fafafa; font-weight: 600; cursor: pointer; user-select: none; }
+        th:hover { background: #eee; }
+        tr:hover { background: #f9f9f9; }
+        tr.selected { background: #e8e8e8; }
+        td.check-cell { width: 40px; text-align: center; }
+        .tag { background: #eee; padding: 2px 6px; border-radius: 3px; font-size: 11px; }
+        .stat-bar { display: inline-block; height: 6px; border-radius: 3px; background: #111; width: 100%; }
+        .pagination { display: flex; justify-content: center; gap: 4px; padding: 12px; border-top: 1px solid #eee; }
+        .page-btn { padding: 6px 10px; border: 1px solid #ddd; background: #fff; cursor: pointer; border-radius: 3px; }
+        .page-btn.active { background: #111; color: #fff; border-color: #111; }
+        
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 100; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: #fff; border-radius: 8px; width: 90%; max-width: 900px; max-height: 85vh; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #ddd; }
+        .modal-header h3 { font-size: 16px; }
+        .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px 8px; }
+        .modal-body { padding: 20px; }
+        .modal-footer { padding: 14px 20px; border-top: 1px solid #ddd; display: flex; justify-content: flex-end; gap: 8px; }
+        
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 1px solid #ddd; margin-bottom: 16px; }
+        .tab { padding: 10px 16px; cursor: pointer; border-bottom: 2px solid transparent; font-size: 14px; }
+        .tab.active { border-bottom-color: #111; font-weight: 600; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Comparison Charts */
+        .chart-area { background: #fafafa; border: 1px solid #ddd; border-radius: 6px; padding: 20px; margin-bottom: 16px; }
+        .chart-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+        .radar-chart { width: 100%; max-width: 400px; margin: 0 auto; }
+        .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+        .bar-row { display: flex; align-items: center; gap: 8px; }
+        .bar-label { width: 140px; font-size: 12px; }
+        .bar-track { flex: 1; background: #eee; height: 18px; border-radius: 4px; overflow: hidden; position: relative; }
+        .bar-fill { height: 100%; background: #111; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; color: #fff; font-size: 11px; }
+        .bar-fill.alt { background: #888; }
+        .comparison-selector { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .comparison-selector .btn { flex: 1; }
+        .comparison-selector .btn.active { background: #111; color: #fff; }
+        
+        /* Column Builder */
+        .col-builder { display: none; position: fixed; top: 0; right: 0; width: 360px; height: 100vh; background: #fff; box-shadow: -2px 0 12px rgba(0,0,0,0.1); z-index: 90; padding: 20px; overflow-y: auto; }
+        .col-builder.active { display: block; }
+        .col-category { margin-bottom: 12px; }
+        .col-category h4 { font-size: 13px; margin-bottom: 6px; padding: 6px 0; border-bottom: 1px solid #eee; }
+        .col-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 13px; }
+        .col-item input { margin: 0; }
+        
+        /* Utility */
+        .text-muted { color: #888; font-size: 12px; }
+        .mt-1 { margin-top: 8px; }
+        .mb-2 { margin-bottom: 16px; }
+        .badge { background: #111; color: #fff; padding: 2px 6px; border-radius: 3px; font-size: 10px; }
+        .flex { display: flex; }
+        .gap-2 { gap: 8px; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        
+        /* Group Comparison */
+        .group-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .group-card { border: 1px solid #ddd; border-radius: 6px; padding: 14px; }
+        .group-card h4 { font-size: 14px; margin-bottom: 10px; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar: Filters -->
+    <div class="sidebar">
+        <h2>Тип данных</h2>
+        <div class="filter-group">
+            <select id="dataType" onchange="updateMetrics()">
+                <option value="stats">Статистика матчей</option>
+                <option value="tests">Физические тесты</option>
+                <option value="ratings">Оценки экспертов</option>
+                <option value="fitness">Фитнес данные</option>
+            </select>
+        </div>
+
+        <h2>Фильтры</h2>
+        <div class="filter-group">
+            <label>Период</label>
+            <input type="date" value="2024-01-01" style="width: 48%; display: inline-block;"> <span style="margin: 0 4px;">—</span>
+            <input type="date" value="2024-12-31" style="width: 48%; display: inline-block;">
+        </div>
+        <div class="filter-group">
+            <label>Сезон / Турнир</label>
+            <select>
+                <option>Все турниры</option>
+                <option selected>QJL U-16 2024</option>
+                <option>Товарищеские матчи</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Команда</label>
+            <div class="multi-select">
+                <span class="chip active">Кайрат U-16</span>
+                <span class="chip active">Астана U-16</span>
+                <span class="chip active">Тобол U-16</span>
+                <span class="chip">Ордабасы U-16</span>
+                <span class="chip">Шахтер U-16</span>
+            </div>
+        </div>
+        <div class="filter-group">
+            <label>Возрастная группа</label>
+            <select>
+                <option selected>Все группы</option>
+                <option>U-16/18</option>
+                <option>U-13/15</option>
+                <option>U-11/12</option>
+                <option>U-8/10</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Амплуа / Позиция</label>
+            <select>
+                <option selected>Все позиции</option>
+                <option>Вратарь</option>
+                <option>Защитник</option>
+                <option>Полузащитник</option>
+                <option>Нападающий</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Качество данных</label>
+            <div class="multi-select">
+                <span class="chip active">≥30 мин</span>
+                <span class="chip active">Заполнен тест</span>
+            </div>
+        </div>
+
+        <div class="btn-group" style="margin-top: 20px;">
+            <button class="btn btn-primary" style="flex:1;">Применить</button>
+            <button class="btn" style="flex:1;">Очистить</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <div class="header">
+            <div>
+                <h1>Игроки</h1>
+                <p class="text-muted mt-1">Аналитик • 5 команд • 128 игроков</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-sm" onclick="toggleColBuilder()">⚙️ Настроить столбцы</button>
+                <button class="btn btn-sm" onclick="exportData()">📥 Экспорт</button>
+                <button class="btn btn-sm">💾 Сохранить шаблон</button>
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="flex justify-between items-center mb-2" style="margin-bottom: 12px;">
+            <div class="flex items-center gap-2">
+                <input type="text" placeholder="Поиск игрока..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; width: 240px; font-size: 13px;">
+                <button class="btn btn-sm" onclick="openCompareModal('single')">🔍 Сравнить</button>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-muted">Всего: 128</span>
+                <select style="padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px;">
+                    <option>Сортировка: По рейтингу</option>
+                    <option>По имени А-Я</option>
+                    <option>По минутам</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <span class="text-muted">Показаны 1-10 из 128 игроков</span>
+                <span class="badge">Сезон 2024</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="check-cell"><input type="checkbox" id="selectAll" onclick="toggleAll()"></th>
+                        <th>Игрок</th>
+                        <th>Команда</th>
+                        <th>Амплуа</th>
+                        <th>Мин</th>
+                        <th>Г</th>
+                        <th>ГП</th>
+                        <th>xG</th>
+                        <th>Пер%</th>
+                        <th>Едб%</th>
+                        <th>Оценка</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="playerTable">
+                    <tr data-id="1">
+                        <td class="check-cell"><input type="checkbox" class="row-check"></td>
+                        <td><strong>Абайдуллаев Ильдар</strong></td>
+                        <td>Кайрат U-16</td>
+                        <td><span class="tag">ПЗ</span></td>
+                        <td>840</td>
+                        <td>3</td>
+                        <td>7</td>
+                        <td>2.4</td>
+                        <td>84%</td>
+                        <td>62%</td>
+                        <td><span style="background:#111; color:#fff; padding:2px 6px; border-radius:3px; font-size:11px;">7.8</span></td>
+                        <td><button class="btn btn-sm" onclick="selectPlayer(this)">Выбрать</button></td>
+                    </tr>
+                    <tr data-id="2">
+                        <td class="check-cell"><input type="checkbox" class="row-check"></td>
+                        <td><strong>Сериков Арман</strong></td>
+                        <td>Астана U-16</td>
+                        <td><span class="tag">ЗЩ</span></td>
+                        <td>780</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>0.3</td>
+                        <td>78%</td>
+                        <td>71%</td>
+                        <td><span style="background:#111; color:#fff; padding:2px 6px; border-radius:3px; font-size:11px;">7.4</span></td>
+                        <td><button class="btn btn-sm" onclick="selectPlayer(this)">Выбрать</button></td>
+                    </tr>
+                    <tr data-id="3">
+                        <td class="check-cell"><input type="checkbox" class="row-check"></td>
+                        <td><strong>Нурланов Данияр</strong></td>
+                        <td>Тобол U-16</td>
+                        <td><span class="tag">НП</span></td>
+                        <td>690</td>
+                        <td>11</td>
+                        <td>4</td>
+                        <td>6.8</td>
+                        <td>65%</td>
+                        <td>48%</td>
+                        <td><span style="background:#111; color:#fff; padding:2px 6px; border-radius:3px; font-size:11px;">8.2</span></td>
+                        <td><button class="btn btn-sm" onclick="selectPlayer(this)">Выбрать</button></td>
+                    </tr>
+                    <tr data-id="4">
+                        <td class="check-cell"><input type="checkbox" class="row-check"></td>
+                        <td><strong>Касымов Бауыржан</strong></td>
+                        <td>Кайрат U-16</td>
+                        <td><span class="tag">ВР</span></td>
+                        <td>900</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>45%</td>
+                        <td>—</td>
+                        <td><span style="background:#111; color:#fff; padding:2px 6px; border-radius:3px; font-size:11px;">7.1</span></td>
+                        <td><button class="btn btn-sm" onclick="selectPlayer(this)">Выбрать</button></td>
+                    </tr>
+                    <tr data-id="5">
+                        <td class="check-cell"><input type="checkbox" class="row-check"></td>
+                        <td><strong>Тлеуберди Нурхан</strong></td>
+                        <td>Ордабасы U-16</td>
+                        <td><span class="tag">ПЗ</span></td>
+                        <td>540</td>
+                        <td>2</td>
+                        <td>5</td>
+                        <td>1.9</td>
+                        <td>81%</td>
+                        <td>55%</td>
+                        <td><span style="background:#111; color:#fff; padding:2px 6px; border-radius:3px; font-size:11px;">7.6</span></td>
+                        <td><button class="btn btn-sm" onclick="selectPlayer(this)">Выбрать</button></td>
+                    </tr>
+                    <tr data-id="6">
+                        <td class="check-cell"><input type="checkbox" class="row-check"></td>
+                        <td><strong>Сагиев Ержан</strong></td>
+                        <td>Шахтер U-16</td>
+                        <td><span class="tag">ЗЩ</span></td>
+                        <td>870</td>
+                        <td>0</td>
+                        <td>3</td>
+                        <td>0.1</td>
+                        <td>88%</td>
+                        <td>74%</td>
+                        <td><span style="background:#111; color:#fff; padding:2px 6px; border-radius:3px; font-size:11px;">7.9</span></td>
+                        <td><button class="btn btn-sm" onclick="selectPlayer(this)">Выбрать</button></td>
+                    </tr>
+                    <tr data-id="7">
+                        <td class="check-cell"><input type="checkbox" class="row-check"></td>
+                        <td><strong>Жумагалиев Асылбек</strong></td>
+                        <td>Астана U-16</td>
+                        <td><span class="tag">НП</span></td>
+                        <td>410</td>
+                        <td>5</td>
+                        <td>1</td>
+                        <td>3.4</td>
+                        <td>62%</td>
+                        <td>41%</td>
+                        <td><span style="background:#111; color:#fff; padding:2px 6px; border-radius:3px; font-size:11px;">7.0</span></td>
+                        <td><button class="btn btn-sm" onclick="selectPlayer(this)">Выбрать</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <span style="padding: 6px;">...</span>
+                <button class="page-btn">13</button>
+                <button class="page-btn">→</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Column Builder Panel -->
+    <div class="col-builder" id="colBuilder">
+        <div class="flex justify-between items-center mb-2" style="margin-bottom: 16px;">
+            <h3 style="font-size: 16px;">Настроить столбцы</h3>
+            <button class="modal-close" onclick="toggleColBuilder()">✕</button>
+        </div>
+        <input type="text" placeholder="Поиск метрики..." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 16px; font-size: 13px;">
+        
+        <div class="col-category">
+            <h4>Общая информация</h4>
+            <label class="col-item"><input type="checkbox" checked> ФИО</label>
+            <label class="col-item"><input type="checkbox" checked> Команда</label>
+            <label class="col-item"><input type="checkbox"> Возраст</label>
+            <label class="col-item"><input type="checkbox" checked> Амплуа</label>
+        </div>
+        <div class="col-category">
+            <h4>Матчевая статистика</h4>
+            <label class="col-item"><input type="checkbox" checked> Минуты</label>
+            <label class="col-item"><input type="checkbox" checked> Голы</label>
+            <label class="col-item"><input type="checkbox" checked> Голевые передачи</label>
+            <label class="col-item"><input type="checkbox" checked> xG</label>
+            <label class="col-item"><input type="checkbox"> xA</label>
+            <label class="col-item"><input type="checkbox"> Удары в створ</label>
+            <label class="col-item"><input type="checkbox"> Обводки</label>
+        </div>
+        <div class="col-category">
+            <h4>Физические тесты</h4>
+            <label class="col-item"><input type="checkbox"> Прыжок в высоту</label>
+            <label class="col-item"><input type="checkbox"> Спринт 10м</label>
+            <label class="col-item"><input type="checkbox"> Выносливость (Yo-Yo)</label>
+        </div>
+        <div class="col-category">
+            <h4>Оценки</h4>
+            <label class="col-item"><input type="checkbox"> Средняя оценка</label>
+            <label class="col-item"><input type="checkbox"> ТТД атака</label>
+            <label class="col-item"><input type="checkbox"> ТТД оборона</label>
+        </div>
+        <div class="btn-group" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 16px;">
+            <button class="btn btn-primary" style="flex:1;" onclick="toggleColBuilder()">Применить</button>
+        </div>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div class="modal-overlay" id="compareModal">
+        <div class="modal" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h3>Сравнительный анализ</h3>
+                <button class="modal-close" onclick="closeCompareModal()">✕</button>
+            </div>
+            
+            <!-- Comparison Type Selector -->
+            <div class="modal-body" style="padding-bottom: 0;">
+                <div class="comparison-selector">
+                    <button class="btn active" onclick="setCompareType(this, 'single')">Игрок vs Игрок</button>
+                    <button class="btn" onclick="setCompareType(this, 'player_group')">Игрок vs Группа</button>
+                    <button class="btn" onclick="setCompareType(this, 'player_etalon')">Игрок vs Эталон</button>
+                    <button class="btn" onclick="setCompareType(this, 'group_group')">Группа vs Группа</button>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(this, 'charts')">📊 Диаграммы</div>
+                    <div class="tab" onclick="switchTab(this, 'table')">📋 Таблица</div>
+                    <div class="tab" onclick="switchTab(this, 'details')">🔍 Детализация</div>
+                </div>
+
+                <!-- Tab Content: Charts -->
+                <div class="tab-content active" id="tab-charts">
+                    <!-- Radar Chart -->
+                    <div class="chart-area">
+                        <div class="chart-title">Радарная диаграмма: Профиль игроков</div>
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+                            <!-- Simple SVG Radar -->
+                            <svg viewBox="0 0 200 200" width="240" height="240">
+                                <polygon points="100,20 180,80 150,170 50,170 20,80" fill="none" stroke="#ddd" stroke-width="1"/>
+                                <polygon points="100,40 160,85 140,150 60,150 40,85" fill="none" stroke="#eee" stroke-width="1"/>
+                                <polygon points="100,60 140,90 130,130 70,130 60,90" fill="none" stroke="#f5f5f5" stroke-width="1"/>
+                                <!-- Player 1 -->
+                                <polygon points="100,30 170,80 150,160 55,160 30,80" fill="rgba(17,17,17,0.2)" stroke="#111" stroke-width="2"/>
+                                <!-- Player 2 -->
+                                <polygon points="100,50 150,85 135,150 65,150 50,85" fill="rgba(136,136,136,0.2)" stroke="#888" stroke-width="2" stroke-dasharray="4,2"/>
+                                <!-- Labels -->
+                                <text x="100" y="15" font-size="8" text-anchor="middle">Скорость</text>
+                                <text x="185" y="85" font-size="8">Сила</text>
+                                <text x="155" y="180" font-size="8">Выносливость</text>
+                                <text x="45" y="180" font-size="8">Техника</text>
+                                <text x="15" y="85" font-size="8">Пас</text>
+                                <!-- Points P1 -->
+                                <circle cx="100" cy="30" r="2" fill="#111"/>
+                                <circle cx="170" cy="80" r="2" fill="#111"/>
+                                <circle cx="150" cy="160" r="2" fill="#111"/>
+                                <circle cx="55" cy="160" r="2" fill="#111"/>
+                                <circle cx="30" cy="80" r="2" fill="#111"/>
+                            </svg>
+                            <div style="font-size: 12px;">
+                                <div class="flex items-center gap-2 mb-2"><span style="width: 12px; height: 12px; background: #111; display: inline-block; border-radius: 2px;"></span> <strong>Абайдуллаев Ильдар</strong></div>
+                                <div class="flex items-center gap-2 mb-2"><span style="width: 12px; height: 12px; background: #888; display: inline-block; border-radius: 2px; border: 2px dashed #666;"></span> <strong>Сериков Арман</strong></div>
+                                <div class="mt-1 text-muted">Оси нормализованы 0–100% относительно эталона</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bar Charts -->
+                    <div class="chart-area">
+                        <div class="chart-title">Сравнение метрик: Игрок 1 vs Игрок 2</div>
+                        <div class="bar-chart">
+                            <div class="bar-row">
+                                <span class="bar-label">Голы за сезон</span>
+                                <div class="bar-track"><div class="bar-fill" style="width: 60%;">3</div></div>
+                                <div class="bar-track"><div class="bar-fill alt" style="width: 40%;">1</div></div>
+                            </div>
+                            <div class="bar-row">
+                                <span class="bar-label">Голевые передачи</span>
+                                <div class="bar-track"><div class="bar-fill" style="width: 70%;">7</div></div>
+                                <div class="bar-track"><div class="bar-fill alt" style="width: 40%;">2</div></div>
+                            </div>
+                            <div class="bar-row">
+                                <span class="bar-label">xG (ожидаемые голы)</span>
+                                <div class="bar-track"><div class="bar-fill" style="width: 50%;">2.4</div></div>
+                                <div class="bar-track"><div class="bar-fill alt" style="width: 30%;">0.3</div></div>
+                            </div>
+                            <div class="bar-row">
+                                <span class="bar-label">Точность передач %</span>
+                                <div class="bar-track"><div class="bar-fill" style="width: 84%;">84%</div></div>
+                                <div class="bar-track"><div class="bar-fill alt" style="width: 78%;">78%</div></div>
+                            </div>
+                            <div class="bar-row">
+                                <span class="bar-label">Выигр. единоборства %</span>
+                                <div class="bar-track"><div class="bar-fill" style="width: 62%;">62%</div></div>
+                                <div class="bar-track"><div class="bar-fill alt" style="width: 71%;">71%</div></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-1 text-muted" style="margin-top: 8px; font-size: 11px;">
+                            <span>■ Абайдуллаев</span>
+                            <span>□ Сериков</span>
+                        </div>
+                    </div>
+
+                    <!-- Line Chart: Dynamics -->
+                    <div class="chart-area">
+                        <div class="chart-title">Линейная динамика: Точность передач (%) по турам</div>
+                        <svg viewBox="0 0 600 150" width="100%" height="150" style="background: #fff; border: 1px solid #eee;">
+                            <!-- Grid -->
+                            <line x1="50" y1="20" x2="550" y2="20" stroke="#eee" stroke-width="1"/>
+                            <line x1="50" y1="50" x2="550" y2="50" stroke="#eee" stroke-width="1"/>
+                            <line x1="50" y1="80" x2="550" y2="80" stroke="#eee" stroke-width="1"/>
+                            <line x1="50" y1="110" x2="550" y2="110" stroke="#eee" stroke-width="1"/>
+                            <!-- Y-axis labels -->
+                            <text x="45" y="24" font-size="9" fill="#888">100%</text>
+                            <text x="45" y="54" font-size="9" fill="#888">85%</text>
+                            <text x="45" y="84" font-size="9" fill="#888">70%</text>
+                            <text x="45" y="114" font-size="9" fill="#888">55%</text>
+                            <!-- X-axis labels -->
+                            <text x="80" y="140" font-size="9" fill="#888">Тур 1</text>
+                            <text x="180" y="140" font-size="9" fill="#888">Тур 5</text>
+                            <text x="280" y="140" font-size="9" fill="#888">Тур 10</text>
+                            <text x="380" y="140" font-size="9" fill="#888">Тур 15</text>
+                            <text x="480" y="140" font-size="9" fill="#888">Тур 20</text>
+                            <!-- Player 1 Line -->
+                            <polyline points="80,75 180,60 280,50 380,45 480,35" fill="none" stroke="#111" stroke-width="2"/>
+                            <circle cx="80" cy="75" r="3" fill="#111"/>
+                            <circle cx="180" cy="60" r="3" fill="#111"/>
+                            <circle cx="280" cy="50" r="3" fill="#111"/>
+                            <circle cx="380" cy="45" r="3" fill="#111"/>
+                            <circle cx="480" cy="35" r="3" fill="#111"/>
+                            <!-- Player 2 Line -->
+                            <polyline points="80,85 180,80 280,70 380,65 480,60" fill="none" stroke="#888" stroke-width="2" stroke-dasharray="4,2"/>
+                            <circle cx="80" cy="85" r="3" fill="#888"/>
+                            <circle cx="180" cy="80" r="3" fill="#888"/>
+                            <circle cx="280" cy="70" r="3" fill="#888"/>
+                            <circle cx="380" cy="65" r="3" fill="#888"/>
+                            <circle cx="480" cy="60" r="3" fill="#888"/>
+                            <!-- Legend -->
+                            <line x1="510" y1="30" x2="540" y2="30" stroke="#111" stroke-width="2"/>
+                            <text x="545" y="34" font-size="9">Игрок 1</text>
+                            <line x1="510" y1="50" x2="540" y2="50" stroke="#888" stroke-width="2" stroke-dasharray="4,2"/>
+                            <text x="545" y="54" font-size="9">Игрок 2</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Table -->
+                <div class="tab-content" id="tab-table">
+                    <div class="chart-area">
+                        <div class="chart-title">Сводная таблица сравнения</div>
+                        <table style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Метрика</th>
+                                    <th>Абайдуллаев Ильдар</th>
+                                    <th>Сериков Арман</th>
+                                    <th>Дельта</th>
+                                    <th>Эталон (U-16 ПЗ)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Минуты</strong></td>
+                                    <td>840</td>
+                                    <td>780</td>
+                                    <td><span style="color: #111;">▲ +60</span></td>
+                                    <td>750</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Голы</strong></td>
+                                    <td>3</td>
+                                    <td>1</td>
+                                    <td><span style="color: #111;">▲ +2</span></td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Голевые передачи</strong></td>
+                                    <td>7</td>
+                                    <td>2</td>
+                                    <td><span style="color: #111;">▲ +5</span></td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>xG</strong></td>
+                                    <td>2.4</td>
+                                    <td>0.3</td>
+                                    <td><span style="color: #111;">▲ +2.1</span></td>
+                                    <td>1.5</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Точность передач %</strong></td>
+                                    <td>84%</td>
+                                    <td>78%</td>
+                                    <td><span style="color: #111;">▲ +6%</span></td>
+                                    <td>80%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Единоборства %</strong></td>
+                                    <td>62%</td>
+                                    <td>71%</td>
+                                    <td><span style="color: #555;">▼ -9%</span></td>
+                                    <td>65%</td>
+                                </tr>
+                                <tr style="background: #f5f5f5;">
+                                    <td><strong>Средняя оценка</strong></td>
+                                    <td><strong>7.8</strong></td>
+                                    <td><strong>7.4</strong></td>
+                                    <td><span style="color: #111;">▲ +0.4</span></td>
+                                    <td>7.2</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="flex gap-2" style="justify-content: flex-end;">
+                        <button class="btn btn-sm">📥 Скачать в PDF</button>
+                    </div>
+                </div>
+
+                <!-- Tab Content: Details -->
+                <div class="tab-content" id="tab-details">
+                    <div class="chart-area">
+                        <div class="chart-title">Сырые данные, лежащие за агрегацией</div>
+                        <table style="width: 100%; font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Матч</th>
+                                    <th>Мин</th>
+                                    <th>Г</th>
+                                    <th>ГП</th>
+                                    <th>Пер%</th>
+                                    <th>Едб%</th>
+                                    <th>Ссылка</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>12.03.2024</td>
+                                    <td>Кайрат vs Астана</td>
+                                    <td>90</td>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>86%</td>
+                                    <td>64%</td>
+                                    <td><a href="#" style="color: #111;">Протокол</a></td>
+                                </tr>
+                                <tr>
+                                    <td>24.03.2024</td>
+                                    <td>Тобол vs Кайрат</td>
+                                    <td>85</td>
+                                    <td>0</td>
+                                    <td>1</td>
+                                    <td>82%</td>
+                                    <td>58%</td>
+                                    <td><a href="#" style="color: #111;">Протокол</a></td>
+                                </tr>
+                                <tr>
+                                    <td>05.04.2024</td>
+                                    <td>Кайрат vs Шахтер</td>
+                                    <td>90</td>
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td>88%</td>
+                                    <td>70%</td>
+                                    <td><a href="#" style="color: #111;">Протокол</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn" onclick="closeCompareModal()">Закрыть</button>
+                <button class="btn btn-primary">📤 Поделиться отчётом</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Column Builder
+        function toggleColBuilder() {
+            document.getElementById('colBuilder').classList.toggle('active');
+        }
+
+        // Select/Deselect all rows
+        function toggleAll() {
+            const checked = document.getElementById('selectAll').checked;
+            document.querySelectorAll('.row-check').forEach(cb => cb.checked = checked);
+        }
+
+        // Select player for comparison
+        let selectedPlayers = [];
+        function selectPlayer(btn) {
+            const row = btn.closest('tr');
+            row.classList.toggle('selected');
+            const checkbox = row.querySelector('.row-check');
+            checkbox.checked = !checkbox.checked;
+        }
+
+        // Open Compare Modal
+        function openCompareModal(type) {
+            document.getElementById('compareModal').classList.add('active');
+        }
+        function closeCompareModal() {
+            document.getElementById('compareModal').classList.remove('active');
+        }
+
+        // Switch Compare Type
+        function setCompareType(btn, type) {
+            document.querySelectorAll('.comparison-selector .btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // Switch Tabs in Modal
+        function switchTab(tabEl, tabId) {
+            document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            tabEl.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        // Update metrics based on data type
+        function updateMetrics() {
+            const type = document.getElementById('dataType').value;
+            const headers = document.querySelectorAll('th:not(.check-cell)');
+            // In prototype, just visual feedback
+            console.log('Data type changed to:', type);
+        }
+
+        // Export
+        function exportData() {
+            alert('Экспорт в CSV/XLSX/PDF...\n(В прототипе — заглушка)');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('compareModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCompareModal();
+        });
+    </script>
+</body>
+</html>
+
